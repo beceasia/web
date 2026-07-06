@@ -6,8 +6,8 @@ export default function IndonesianUseCasesPage() {
     <PageShell locale="id" currentPath="/id/use-cases">
       <BasicPage
         title="Skenario Penggunaan"
-        description="Skenario praktis penggunaan tools bece.asia dalam pekerjaan harian."
-        items={["Tata naskah", "Monitoring program", "Dukungan ekspor", "Workspace kajian", "Media pembelajaran", "Utilities kantor"]}
+        description="Skenario praktis penggunaan tools bece.asia untuk kebutuhan umum."
+        items={["Tata naskah", "Monitoring program", "Dukungan ekspor", "Workspace kajian", "Media pembelajaran", "Utilities publik"]}
       />
     </PageShell>
   );

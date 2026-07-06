@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>BTKI Smart Search</title>
+<style>
+:root{--bg:#0b1220;--panel:#111a2d;--panel2:#17223a;--text:#eaf0ff;--muted:#93a4c7;--line:#263552;--brand:#4f8cff;--brand2:#7c3aed;--ok:#16a34a;--warn:#f59e0b;--bad:#ef4444;--chip:#1d2a45}*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at top left,#1a2a50 0,#0b1220 38%,#080d18 100%);color:var(--text)}.app{display:grid;grid-template-columns:280px 1fr;min-height:100vh}.sidebar{border-right:1px solid var(--line);background:rgba(13,21,38,.86);backdrop-filter:blur(14px);padding:22px;position:sticky;top:0;height:100vh;overflow:auto}.brand{display:flex;gap:12px;align-items:center;margin-bottom:22px}.logo{width:44px;height:44px;border-radius:15px;background:linear-gradient(135deg,var(--brand),var(--brand2));display:grid;place-items:center;font-weight:800;box-shadow:0 14px 40px #4f8cff40}.brand h1{font-size:18px;margin:0}.brand p{font-size:12px;color:var(--muted);margin:2px 0 0}.nav button{width:100%;background:transparent;border:0;color:var(--muted);text-align:left;padding:12px 12px;border-radius:12px;font-size:14px;cursor:pointer;margin:2px 0}.nav button.active,.nav button:hover{background:var(--chip);color:var(--text)}.sidecard{margin-top:22px;padding:14px;border:1px solid var(--line);background:rgba(255,255,255,.03);border-radius:16px}.sidecard h3{font-size:13px;margin:0 0 8px}.sidecard p{font-size:12px;color:var(--muted);line-height:1.45;margin:0}.main{padding:28px;max-width:1280px;width:100%;margin:0 auto}.hero{display:grid;grid-template-columns:1.25fr .75fr;gap:18px;margin-bottom:18px}.card{background:rgba(17,26,45,.78);border:1px solid var(--line);border-radius:22px;box-shadow:0 20px 60px #00000030}.searchbox{padding:22px}.searchbox h2{font-size:30px;margin:0 0 8px}.searchbox p{color:var(--muted);margin:0 0 18px}.searchrow{display:flex;gap:10px}.searchrow input{flex:1;background:#0b1220;border:1px solid var(--line);color:var(--text);padding:16px;border-radius:16px;font-size:16px;outline:none}.searchrow input:focus{border-color:var(--brand);box-shadow:0 0 0 4px #4f8cff22}.btn{border:0;background:linear-gradient(135deg,var(--brand),var(--brand2));color:white;border-radius:14px;padding:0 18px;font-weight:700;cursor:pointer}.filters{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.chip{background:var(--chip);color:var(--muted);border:1px solid var(--line);padding:8px 10px;border-radius:999px;font-size:12px;cursor:pointer}.chip.active{background:#294679;color:white;border-color:#4f8cff}.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:18px}.stat{padding:18px;border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));border:1px solid var(--line)}.stat b{font-size:26px}.stat span{display:block;color:var(--muted);font-size:12px;margin-top:4px}.toolbar{display:flex;justify-content:space-between;align-items:center;margin:18px 0}.toolbar h3{margin:0}.small{font-size:12px;color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.result{padding:16px;transition:.2s;cursor:pointer}.result:hover{transform:translateY(-2px);border-color:#4f8cff99}.hs{font-size:24px;font-weight:850;letter-spacing:.5px}.desc{margin:8px 0 12px;color:#d7e1fb;line-height:1.4}.meta{display:flex;gap:6px;flex-wrap:wrap}.tag{font-size:11px;padding:6px 8px;border-radius:999px;background:#0d1729;border:1px solid var(--line);color:var(--muted)}.tag.ok{color:#86efac;border-color:#166534}.tag.warn{color:#fcd34d;border-color:#92400e}.detail{display:none;position:fixed;inset:0;background:#0008;z-index:20;padding:24px;overflow:auto}.detail.open{display:block}.modal{max-width:860px;margin:20px auto;background:#0f172a;border:1px solid var(--line);border-radius:24px;overflow:hidden}.modalhead{padding:22px;background:linear-gradient(135deg,#15233d,#111827);display:flex;justify-content:space-between;gap:16px}.close{background:#1f2937;color:white;border:1px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer}.modalbody{padding:22px}.kv{display:grid;grid-template-columns:190px 1fr;gap:10px;border-bottom:1px solid var(--line);padding:12px 0}.kv b{color:var(--muted);font-size:13px}.section{display:none}.section.active{display:block}.textarea{width:100%;min-height:260px;background:#0b1220;border:1px solid var(--line);color:var(--text);border-radius:16px;padding:14px}.toast{position:fixed;bottom:18px;right:18px;background:#111827;border:1px solid var(--line);padding:12px 14px;border-radius:14px;color:white;display:none}.toast.show{display:block}@media(max-width:920px){.app{grid-template-columns:1fr}.sidebar{position:relative;height:auto}.hero{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.main{padding:16px}.searchrow{flex-direction:column}.btn{padding:14px}.kv{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+ <div class="brand"><div class="logo">HS</div><div><h1>BTKI Smart Search</h1><p>E-BTKI helper</p></div></div>
+ <div class="nav">
+  <button class="active" data-tab="search">Pencarian</button>
+  <button data-tab="compare">Bandingkan HS</button>
+  <button data-tab="notes">Catatan Pemeriksaan</button>
+  <button data-tab="import">Impor Data</button>
+ </div>
+ <div class="sidecard"><h3>Tips klasifikasi</h3><p>Mulai dari uraian barang, bahan utama, fungsi, tingkat proses, lalu cocokkan dengan heading. Jangan memakai pos residu bila ada pos yang lebih spesifik.</p></div>
+ <div class="sidecard"><h3>Mode offline</h3><p>Aplikasi ini berjalan sebagai file HTML tunggal. Bisa dibuka dari laptop tanpa server.</p></div>
+</aside>
+<main class="main">
+<section id="search" class="section active">
+ <div class="hero">
+  <div class="card searchbox">
+   <h2>Cari HS Code lebih cepat</h2>
+   <p>Ketik HS, nama barang, bahan, fungsi, atau kata kunci lartas.</p>
+   <div class="searchrow"><input id="q" placeholder="Contoh: ambergris, spider wood, zinc oxide, 4412, kitchen cabinet" autofocus><button class="btn" onclick="runSearch()">Cari</button></div>
+   <div class="filters" id="filters"></div>
+  </div>
+  <div class="card stats">
+   <div class="stat"><b id="countData">0</b><span>data referensi</span></div>
+   <div class="stat"><b id="countShown">0</b><span>hasil tampil</span></div>
+   <div class="stat"><b>GRI</b><span>cek uraian legal dulu</span></div>
+   <div class="stat"><b>INSW</b><span>validasi lartas</span></div>
+  </div>
+ </div>
+ <div class="toolbar"><h3>Hasil pencarian</h3><div class="small">Klik kartu untuk detail</div></div>
+ <div class="grid" id="results"></div>
+</section>
+<section id="compare" class="section">
+ <div class="card searchbox"><h2>Bandingkan HS</h2><p>Masukkan beberapa HS dipisah koma.</p><div class="searchrow"><input id="compareInput" placeholder="Contoh: 1404.90.90, 0604.90.90, 4421.99.99"><button class="btn" onclick="compareHS()">Bandingkan</button></div></div>
+ <div class="grid" id="compareResults" style="margin-top:16px"></div>
+</section>
+<section id="notes" class="section">
+ <div class="card searchbox"><h2>Catatan pemeriksaan cepat</h2><p>Template pertanyaan untuk minta data tambahan dari pengguna jasa.</p>
+  <textarea class="textarea" id="noteBox">Data yang perlu diminta:
+1. Nama barang dan fungsi utama.
+2. Bahan/komposisi dominan.
+3. Foto barang aktual dan kemasan.
+4. Spesifikasi teknis atau brosur.
+5. Proses pengerjaan: mentah, dikeringkan, dipoles, direkatkan, dirakit, atau menjadi barang jadi.
+6. Negara tujuan/asalan.
+7. Dokumen pendukung: invoice, packing list, MSDS/COA, izin teknis, SVLK/V-Legal, HC/PC bila relevan.
+
+Catatan GRI:
+- GRI 1: cocokkan uraian heading dan catatan bagian/bab.
+- Hindari heading residu jika ada heading yang lebih spesifik.
+- Untuk campuran/set, cek karakter esensial.
+</textarea><br><br><button class="btn" style="padding:14px 18px" onclick="copyNotes()">Salin Catatan</button></div>
+</section>
+<section id="import" class="section">
+ <div class="card searchbox"><h2>Impor database tambahan</h2><p>Tempel JSON array agar database bisa diperluas. Format: hs, uraian, chapter, bm, pajak, lartas, catatan, keywords.</p>
+ <textarea class="textarea" id="jsonBox" placeholder='[{"hs":"4412.51.00","uraian":"...","chapter":"44","bm":"..."}]'></textarea><br><br><button class="btn" style="padding:14px 18px" onclick="loadJson()">Tambahkan Data</button></div>
+</section>
+</main>
+</div>
+<div class="detail" id="detail"><div class="modal"><div class="modalhead"><div><div class="hs" id="dhs"></div><div id="dtitle" class="small"></div></div><button class="close" onclick="closeDetail()">Tutup</button></div><div class="modalbody" id="dbody"></div></div></div>
+<div class="toast" id="toast"></div>
+<script>
+let DATA=[
+{hs:'0510.00.00',uraian:'Ambergris, castoreum, civet and musk; cantharides; bile; glands and other animal products used in pharmaceutical products.',chapter:'05',bm:'0%',pajak:'PPN, PPh impor sesuai ketentuan',lartas:'PE TASL / Surat Keterangan bila ekspor satwa liar',catatan:'Ambergris disebut eksplisit dalam heading 0510. Isu utama bukan HS, tetapi legalitas konservasi/CITES dan dokumen KLHK/BKSDA.',keywords:'ambergris ambar muntahan paus sperm whale parfum tasl cites'},
+{hs:'0604.90.90',uraian:'Foliage, branches and other parts of plants, suitable for ornamental purposes, dried or otherwise prepared.',chapter:'06',bm:'Cek BTKI/INSW',pajak:'PPN, PPh impor sesuai ketentuan',lartas:'Potensi karantina tumbuhan/phytosanitary',catatan:'Cocok untuk akar/ranting dekoratif alami yang minim proses, misalnya spider wood aquascape tanpa poles atau rakit.',keywords:'spider wood driftwood akar kayu aquarium aquascape tanaman hias dekoratif'},
+{hs:'1404.90.90',uraian:'Vegetable products not elsewhere specified or included.',chapter:'14',bm:'Cek BTKI/INSW',pajak:'PPN, PPh impor sesuai ketentuan',lartas:'Potensi karantina tumbuhan',catatan:'Alternatif untuk produk nabati alami yang belum punya heading spesifik, misalnya tempurung kelapa mentah atau akar natural tertentu.',keywords:'tempurung kelapa batok kelapa akar kayu bahan nabati'},
+{hs:'4402.20.10',uraian:'Wood charcoal, of coconut shell.',chapter:'44',bm:'Cek BTKI/INSW',pajak:'PPN, PPh impor sesuai ketentuan',lartas:'Cek ketentuan kayu/arang',catatan:'Hanya untuk arang tempurung kelapa. Bukan untuk batok kelapa mentah yang belum dibakar.',keywords:'arang tempurung kelapa coconut shell charcoal'},
+{hs:'4412.51.00',uraian:'Plywood, veneered panels and similar laminated wood, with at least one outer ply of tropical wood.',chapter:'44',bm:'Cek BTKI/INSW',pajak:'PPN, PPh impor sesuai ketentuan',lartas:'Dokumen V-Legal / Surat Keterangan untuk ekspor kayu',catatan:'Pakai bila barang sudah berupa panel plywood/laminated wood. Jangan dipakai untuk lamella terpisah yang belum menjadi panel.',keywords:'laminated board plywood kayu laminating board tropis v legal svlk'},
+{hs:'4421.99.99',uraian:'Other articles of wood.',chapter:'44',bm:'Umumnya 5%',pajak:'PPN, PPh impor sesuai ketentuan',lartas:'Cek SVLK/V-Legal bila ekspor produk kayu',catatan:'Heading residu untuk artikel kayu. Dipakai bila tidak masuk heading kayu yang lebih spesifik.',keywords:'artikel kayu wood article decorative wood'},
+{hs:'2817.00.00',uraian:'Zinc oxide; zinc peroxide.',chapter:'28',bm:'Cek BTKI/INSW',pajak:'PPN, PPh impor sesuai ketentuan',lartas:'Potensi SNI/SKI BPOM sesuai penggunaan',catatan:'ZnO murni lebih tepat ke 2817. Jangan dialihkan ke 3812 bila bukan prepared rubber accelerator.',keywords:'zinc oxide zno seng oksida sni'},
+{hs:'3812.10.00',uraian:'Prepared rubber accelerators.',chapter:'38',bm:'Cek BTKI/INSW',pajak:'PPN, PPh impor sesuai ketentuan',lartas:'Cek lartas kimia terkait komposisi',catatan:'Untuk campuran akselerator vulkanisasi karet. Zinc oxide murni bukan rubber accelerator.',keywords:'rubber accelerator akselerator karet vulkanisasi'},
+{hs:'3822.90.90',uraian:'Diagnostic or laboratory reagents, other.',chapter:'38',bm:'Cek BTKI/INSW',pajak:'PPN, PPh impor sesuai ketentuan',lartas:'Ex tertentu dapat terkait sediaan opium/campuran, cek komposisi',catatan:'HS ini tidak otomatis narkotika. Kewajiban izin ditentukan zat dalam MSDS/COA.',keywords:'reagent lab diagnostic reagent opium narkotika kemenkes'},
+{hs:'0305.71.00',uraian:'Fish fins, heads, tails, maws and other edible fish offal, shark fins.',chapter:'03',bm:'Cek BTKI/INSW',pajak:'PPN, PPh impor sesuai ketentuan',lartas:'CITES/KKP/KLHK untuk spesies tertentu',catatan:'Untuk sirip hiu kering. Spesies ilmiah wajib dipastikan.',keywords:'dried shark fin sirip hiu kering cites'},
+{hs:'0305.79.00',uraian:'Other edible fish offal, dried, salted or in brine.',chapter:'03',bm:'Cek BTKI/INSW',pajak:'PPN, PPh impor sesuai ketentuan',lartas:'CITES/KKP/KLHK untuk spesies pari tertentu',catatan:'Alternatif untuk sirip pari kering yang tidak punya subheading spesifik.',keywords:'dried stingray fin sirip pari kering glaucostegus'},
+{hs:'1905.90.90',uraian:'Bread, pastry, cakes, biscuits and other bakers’ wares, other.',chapter:'19',bm:'Umumnya 5%',pajak:'PPN, PPh impor sesuai ketentuan',lartas:'Pangan olahan, cek BPOM/HC sesuai komposisi dan negara tujuan',catatan:'Dapat dipakai untuk snack keripik berbasis tepung seperti keripik ebi bila ebi hanya flavoring.',keywords:'keripik ebi shrimp chips prawn crackers snack'},
+{hs:'8409.91.99',uraian:'Parts suitable for use solely or principally with spark-ignition internal combustion piston engines.',chapter:'84',bm:'Umumnya 5%',pajak:'PPN, PPh 22 impor',lartas:'Cek barang baru/bekas dan ketentuan part mesin',catatan:'Untuk crankcase, cylinder, crankshaft, reed valve mesin bensin.',keywords:'vespa crankcase cylinder crankshaft reed valve engine parts'},
+{hs:'8714.10.90',uraian:'Parts and accessories of motorcycles, other.',chapter:'87',bm:'Umumnya 10%',pajak:'PPN, PPh 22 impor',lartas:'Cek barang baru/bekas dan ketentuan kendaraan',catatan:'Untuk clutch, gear, kickstarter, selector fork motor.',keywords:'motorcycle parts vespa clutch gear kickstarter'},
+{hs:'9403.40.00',uraian:'Wooden furniture of a kind used in the kitchen.',chapter:'94',bm:'Umumnya 5%',pajak:'PPN, PPh 22 impor',lartas:'Cek ketentuan kayu dan barang baru/bekas',catatan:'Kitchen set flat pack tetap furniture dapur bila lengkap dan jelas fungsinya.',keywords:'kitchen set kitchen cabinet flat pack kabinet dapur'}
+];
+let activeChapter='all';
+function norm(s){return (s||'').toString().toLowerCase().replace(/[^a-z0-9]+/g,' ')}
+function renderFilters(){let chapters=[...new Set(DATA.map(x=>x.chapter))].sort();let html='<span class="chip active" data-ch="all">Semua</span>'+chapters.map(c=>`<span class="chip" data-ch="${c}">Bab ${c}</span>`).join('');filters.innerHTML=html;filters.querySelectorAll('.chip').forEach(el=>el.onclick=()=>{filters.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));el.classList.add('active');activeChapter=el.dataset.ch;runSearch()})}
+function score(item,q){if(!q)return 1;let hay=norm([item.hs,item.uraian,item.chapter,item.bm,item.lartas,item.catatan,item.keywords].join(' '));let qs=norm(q).split(' ').filter(Boolean);let s=0;for(let t of qs){if(norm(item.hs).includes(t))s+=8;if(hay.includes(t))s+=2}return s}
+function card(item){return `<div class="card result" onclick="openDetail('${item.hs}')"><div class="hs">${item.hs}</div><div class="desc">${item.uraian}</div><div class="meta"><span class="tag">Bab ${item.chapter}</span><span class="tag ok">BM ${item.bm}</span>${item.lartas?`<span class="tag warn">Lartas</span>`:''}</div></div>`}
+function runSearch(){let q=document.getElementById('q').value;let list=DATA.map(x=>({...x,_s:score(x,q)})).filter(x=>x._s>0&&(activeChapter=='all'||x.chapter==activeChapter)).sort((a,b)=>b._s-a._s||a.hs.localeCompare(b.hs));results.innerHTML=list.map(card).join('')||'<div class="card result"><div class="desc">Tidak ada hasil. Coba kata kunci lain atau impor database tambahan.</div></div>';countData.textContent=DATA.length;countShown.textContent=list.length}
+function openDetail(hs){let item=DATA.find(x=>x.hs==hs);if(!item)return;dhs.textContent=item.hs;dtitle.textContent=`Bab ${item.chapter}`;dbody.innerHTML=`<div class="kv"><b>Uraian</b><div>${item.uraian}</div></div><div class="kv"><b>Bea Masuk</b><div>${item.bm}</div></div><div class="kv"><b>Pajak</b><div>${item.pajak}</div></div><div class="kv"><b>Lartas/Catatan ekspor</b><div>${item.lartas||'-'}</div></div><div class="kv"><b>Catatan klasifikasi</b><div>${item.catatan}</div></div><div class="kv"><b>Keyword</b><div>${item.keywords}</div></div>`;detail.classList.add('open')}
+function closeDetail(){detail.classList.remove('open')}
+function compareHS(){let vals=compareInput.value.split(',').map(x=>x.trim()).filter(Boolean);let list=vals.map(v=>DATA.find(x=>x.hs.replaceAll('.','')==v.replaceAll('.','')||x.hs==v)).filter(Boolean);compareResults.innerHTML=list.map(card).join('')||'<div class="card result"><div class="desc">HS tidak ditemukan di database contoh.</div></div>'}
+function copyNotes(){navigator.clipboard.writeText(noteBox.value);toastMsg('Catatan disalin')}
+function loadJson(){try{let arr=JSON.parse(jsonBox.value);if(!Array.isArray(arr))throw new Error('JSON harus array');DATA=DATA.concat(arr);renderFilters();runSearch();toastMsg('Data berhasil ditambahkan')}catch(e){toastMsg('JSON tidak valid')}}
+function toastMsg(t){toast.textContent=t;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2000)}
+document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById(b.dataset.tab).classList.add('active')});
+q.addEventListener('input',runSearch);renderFilters();runSearch();
+</script>
+</body>
+</html>

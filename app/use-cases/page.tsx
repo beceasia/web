@@ -6,8 +6,8 @@ export default function UseCasesPage() {
     <PageShell locale="en" currentPath="/use-cases">
       <BasicPage
         title="Use Cases"
-        description="Practical scenarios for using bece.asia tools in daily work."
-        items={["Document workflow", "Program monitoring", "Export support", "Research workspace", "Learning tools", "Office utilities"]}
+        description="Practical scenarios for using bece.asia tools in common workflows."
+        items={["Document workflow", "Program monitoring", "Export support", "Research workspace", "Learning tools", "Public utilities"]}
       />
     </PageShell>
   );

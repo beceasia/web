@@ -14,8 +14,8 @@ export const dictionary = {
     },
     hero: {
       eyebrow: "Utility-first digital portal",
-      title: "Digital tools for customs, trade, and public-sector work.",
-      subtitle: "bece.asia is a utility-first portal for lightweight apps, workflow automation, document tools, monitoring dashboards, and learning experiments.",
+      title: "Public digital tools for trade, documents, learning, and everyday workflows.",
+      subtitle: "bece.asia is a utility-first portal for sanitized community apps, workflow automation, document tools, monitoring dashboards, and learning experiments.",
       primary: "Explore Apps",
       secondary: "Open Utilities"
     },
@@ -67,8 +67,8 @@ export const dictionary = {
     },
     hero: {
       eyebrow: "Portal digital berbasis utilitas",
-      title: "Alat digital untuk kepabeanan, perdagangan, dan pekerjaan sektor publik.",
-      subtitle: "bece.asia adalah portal utilitas untuk aplikasi ringan, otomasi alur kerja, tata naskah, dashboard monitoring, dan media pembelajaran.",
+      title: "Alat digital publik untuk perdagangan, dokumen, pembelajaran, dan alur kerja harian.",
+      subtitle: "bece.asia adalah portal utilitas untuk aplikasi komunitas yang disanitasi, otomasi alur kerja, tata naskah, dashboard monitoring, dan media pembelajaran.",
       primary: "Lihat Aplikasi",
       secondary: "Buka Utilities"
     },

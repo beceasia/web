@@ -9,7 +9,7 @@ const monthEn = ["January", "February", "March", "April", "May", "June", "July",
 
 export function UtilitiesClient({ locale }: { locale: Locale }) {
   const [numberSeq, setNumberSeq] = useState("001");
-  const [code, setCode] = useState("BC-ASIA");
+  const [code, setCode] = useState("DOC-ASIA");
   const [year, setYear] = useState("2026");
   const [date, setDate] = useState("2026-07-04");
   const [score, setScore] = useState("4.87");
@@ -103,7 +103,7 @@ export function UtilitiesClient({ locale }: { locale: Locale }) {
 
       <UtilityCard title={copy.launcher}>
         <div className="grid gap-3">
-          {apps.slice(0, 6).map((app) => (
+          {apps.filter((app) => app.url !== "#").slice(0, 6).map((app) => (
             <a key={app.slug} href={app.url} target="_blank" rel="noreferrer" className="rounded-2xl bg-slate-50 p-3 text-sm font-semibold text-navy transition hover:bg-teal/10">
               {app.name[locale]}
             </a>

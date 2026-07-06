@@ -11,7 +11,7 @@ export function AppsPageContent({ locale }: { locale: Locale }) {
       <SectionHeading
         eyebrow="bece.asia"
         title={dict.sections.allApps}
-        description={locale === "en" ? "Browse practical apps, prototypes, and utilities for customs, trade, public-sector workflows, and productivity." : "Telusuri aplikasi, prototipe, dan utilities untuk kepabeanan, perdagangan, alur kerja sektor publik, dan produktivitas."}
+        description={locale === "en" ? "Browse practical apps, prototypes, and utilities that have been cleaned for public use: trade tools, document workflows, dashboards, learning, and productivity." : "Telusuri aplikasi, prototipe, dan utilities yang sudah dibersihkan untuk penggunaan publik: alat perdagangan, tata naskah, dashboard, pembelajaran, dan produktivitas."}
       />
       <div className="mt-8">
         <AppsClient apps={apps} locale={locale} />

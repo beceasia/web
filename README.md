@@ -1,6 +1,6 @@
 # bece.asia
 
-Digital tools for customs, trade, and public-sector work.
+Public digital tools for trade, documents, learning, and everyday workflows.
 
 ## Stack
 
@@ -25,7 +25,7 @@ npm run build
 
 ## Data editing
 
-Edit app catalog data in `data/apps.ts`.
+Edit app catalog data in `data/apps.ts`. App entries should be sanitized and contain only public-safe descriptions, sample data, and public links before they are listed.
 
 Edit bilingual UI copy in `data/i18n.ts`.
 

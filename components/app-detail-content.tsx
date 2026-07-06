@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowUpRight, Code2 } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, Code2, PanelTopOpen } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Locale } from "@/data/apps";
@@ -46,10 +46,12 @@ export function AppDetailContent({ slug, locale }: { slug: string; locale: Local
         </div>
 
         <div className="mt-8 flex flex-wrap gap-3">
-          <a href={app.url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full bg-navy px-5 py-3 text-sm font-bold text-white transition hover:bg-navy-light">
-            {dict.apps.open}
-            <ArrowUpRight size={17} />
-          </a>
+          {app.url !== "#" ? (
+            <a href={app.url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full bg-navy px-5 py-3 text-sm font-bold text-white transition hover:bg-navy-light">
+              {dict.apps.open}
+              <ArrowUpRight size={17} />
+            </a>
+          ) : null}
           {app.repo ? (
             <a href={app.repo} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-slate-200 px-5 py-3 text-sm font-bold text-navy transition hover:border-teal">
               <Code2 size={17} />
@@ -58,6 +60,21 @@ export function AppDetailContent({ slug, locale }: { slug: string; locale: Local
           ) : null}
         </div>
       </div>
+
+      {app.embedUrl ? (
+        <div className="mt-8 overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-soft">
+          <div className="flex items-center justify-between gap-3 border-b border-slate-200 bg-slate-50 px-5 py-4">
+            <div className="flex items-center gap-2 text-sm font-bold text-navy">
+              <PanelTopOpen size={18} />
+              {locale === "en" ? "Embedded app" : "Aplikasi tertempel"}
+            </div>
+            <a href={app.embedUrl} target="_blank" rel="noreferrer" className="text-sm font-semibold text-teal hover:text-navy">
+              {locale === "en" ? "Open full page" : "Buka layar penuh"}
+            </a>
+          </div>
+          <iframe title={app.name[locale]} src={app.embedUrl} className="h-[760px] w-full border-0" loading="lazy" />
+        </div>
+      ) : null}
     </section>
   );
 }

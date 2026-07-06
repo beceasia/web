@@ -1,8 +1,8 @@
 import type { Locale } from "./apps";
 
 export const categories: Array<{ key: string; label: Record<Locale, string>; description: Record<Locale, string> }> = [
-  { key: "Administration", label: { en: "Administration", id: "Administrasi" }, description: { en: "Office workflows and internal administration.", id: "Alur kerja kantor dan administrasi internal." } },
-  { key: "Customs Tools", label: { en: "Customs Tools", id: "Kepabeanan" }, description: { en: "Utilities for customs-related work.", id: "Utilitas untuk pekerjaan kepabeanan." } },
+  { key: "Administration", label: { en: "Administration", id: "Administrasi" }, description: { en: "Reusable workflows and general administration.", id: "Alur kerja reusable dan administrasi umum." } },
+  { key: "Trade Tools", label: { en: "Trade Tools", id: "Alat Perdagangan" }, description: { en: "Utilities for trade, tariff, and reference workflows.", id: "Utilitas untuk perdagangan, tarif, dan alur referensi." } },
   { key: "Trade Facilitation", label: { en: "Trade Facilitation", id: "Fasilitasi Perdagangan" }, description: { en: "Tools for trade support and facilitation.", id: "Alat bantu dukungan dan fasilitasi perdagangan." } },
   { key: "Procurement", label: { en: "Procurement", id: "Pengadaan" }, description: { en: "Procurement documents and workflows.", id: "Dokumen dan alur kerja pengadaan." } },
   { key: "Document Workflow", label: { en: "Document Workflow", id: "Tata Naskah" }, description: { en: "Document generation, OCR, filing, and templates.", id: "Generate dokumen, OCR, arsip, dan template." } },
