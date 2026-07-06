@@ -9,8 +9,8 @@ export function generateStaticParams() {
 export default async function AppDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   return (
-    <PageShell locale="en" currentPath={`/apps/${slug}`}>
-      <AppDetailContent locale="en" slug={slug} />
+    <PageShell locale="id" currentPath={`/apps/${slug}`}>
+      <AppDetailContent locale="id" slug={slug} />
     </PageShell>
   );
 }

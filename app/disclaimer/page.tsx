@@ -3,15 +3,15 @@ import { PageShell } from "@/components/page-shell";
 
 export default function DisclaimerPage() {
   return (
-    <PageShell locale="en" currentPath="/disclaimer">
+    <PageShell locale="id" currentPath="/disclaimer">
       <BasicPage
         title="Disclaimer"
-        description="bece.asia is an independent utility portal. It is not an official government website and does not provide binding legal, tariff, customs, procurement, or administrative decisions."
+        description="bece.asia adalah portal utilitas independen. Situs ini bukan website resmi pemerintah dan tidak memberi keputusan hukum, tarif, kepabeanan, pengadaan, atau administrasi yang mengikat."
         items={[
-          "All app outputs are informational and must be validated against official source documents.",
-          "Branding, copy, and app data are sanitized for public use and should not imply institutional endorsement.",
-          "Sensitive workflows are intentionally simplified before publication.",
-          "If a tool appears to contain private or nonpublic information, stop using it and report it through the feedback page."
+          "Semua keluaran aplikasi bersifat informatif dan harus divalidasi ke dokumen sumber resmi.",
+          "Branding, teks, dan data aplikasi disanitasi untuk penggunaan publik dan tidak menyiratkan dukungan instansi.",
+          "Alur kerja sensitif sengaja disederhanakan sebelum dipublikasikan.",
+          "Jika ada alat yang terlihat memuat informasi privat atau nonpublik, hentikan penggunaan dan laporkan melalui halaman masukan."
         ]}
       />
     </PageShell>

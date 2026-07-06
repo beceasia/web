@@ -3,11 +3,11 @@ import { PageShell } from "@/components/page-shell";
 
 export default function UseCasesPage() {
   return (
-    <PageShell locale="en" currentPath="/use-cases">
+    <PageShell locale="id" currentPath="/use-cases">
       <BasicPage
-        title="Use Cases"
-        description="Practical scenarios for using bece.asia tools in common workflows."
-        items={["Document workflow", "Program monitoring", "Export support", "Research workspace", "Learning tools", "Public utilities"]}
+        title="Skenario Penggunaan"
+        description="Skenario praktis penggunaan tools bece.asia untuk kebutuhan umum."
+        items={["Tata naskah", "Monitoring program", "Dukungan ekspor", "Workspace kajian", "Media pembelajaran", "Utilities publik"]}
       />
     </PageShell>
   );

@@ -3,15 +3,15 @@ import { PageShell } from "@/components/page-shell";
 
 export default function PrivacyPage() {
   return (
-    <PageShell locale="en" currentPath="/privacy">
+    <PageShell locale="id" currentPath="/privacy">
       <BasicPage
-        title="Privacy"
-        description="bece.asia is designed for public-safe utilities. Do not submit confidential, personal, official, or operational data into any tool on this site."
+        title="Privasi"
+        description="bece.asia dirancang untuk utilitas yang aman digunakan publik. Jangan memasukkan data rahasia, pribadi, resmi, atau operasional ke alat apa pun di situs ini."
         items={[
-          "Tools should run with sample or public-safe data only.",
-          "Browser-based notes and imports may stay on your device, but users remain responsible for the data they enter.",
-          "bece.asia does not represent a government agency and does not replace official systems.",
-          "When a tool links to or embeds a reference dataset, validate results against official sources before use."
+          "Gunakan data contoh atau data yang aman untuk publik.",
+          "Catatan dan impor data berbasis browser dapat tersimpan di perangkat, tetapi pengguna tetap bertanggung jawab atas data yang dimasukkan.",
+          "bece.asia bukan perwakilan instansi pemerintah dan tidak menggantikan sistem resmi.",
+          "Jika alat memakai dataset referensi, hasilnya tetap perlu divalidasi ke sumber resmi."
         ]}
       />
     </PageShell>

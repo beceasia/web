@@ -3,15 +3,15 @@ import { PageShell } from "@/components/page-shell";
 
 export default function DataPolicyPage() {
   return (
-    <PageShell locale="en" currentPath="/data-policy">
+    <PageShell locale="id" currentPath="/data-policy">
       <BasicPage
-        title="Data Policy"
-        description="Published apps must be cleaned before they are listed or embedded on bece.asia."
+        title="Kebijakan Data"
+        description="Aplikasi yang dipublikasikan harus dibersihkan sebelum dicantumkan atau ditempel di bece.asia."
         items={[
-          "Remove names, IDs, internal document numbers, private endpoints, and nonpublic records.",
-          "Use sample data, public references, or anonymized structures for demonstrations.",
-          "Do not publish enforcement, intelligence, risk, coordinate, or restricted operational datasets.",
-          "Every sensitive app should include a visible public-use notice and a reminder to validate official references."
+          "Hapus nama, identitas, nomor dokumen internal, endpoint privat, dan catatan nonpublik.",
+          "Gunakan data contoh, referensi publik, atau struktur yang dianonimkan untuk demonstrasi.",
+          "Jangan mempublikasikan data penindakan, intelijen, risiko, koordinat, atau dataset operasional terbatas.",
+          "Setiap aplikasi sensitif perlu memuat pemberitahuan penggunaan publik dan pengingat validasi ke referensi resmi."
         ]}
       />
     </PageShell>

@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react";
 import { useEffect, useMemo, useState } from "react";
-import { apps, type Locale } from "@/data/apps";
+import { apps, localized, type Locale } from "@/data/apps";
 import { localePath } from "@/lib/routes";
 
 const monthId = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
@@ -48,6 +48,20 @@ export function UtilitiesClient({ locale }: { locale: Locale }) {
     year: "Year",
     score: "Score on 5 scale",
     result: "Result on 4 scale"
+  } : locale === "zh" ? {
+    number: "\u6587\u6863\u7f16\u53f7\u52a9\u624b",
+    date: "\u65e5\u671f\u683c\u5f0f\u5316",
+    checklist: "\u91c7\u8d2d\u68c0\u67e5\u6e05\u5355",
+    scale: "\u5206\u503c\u8f6c\u6362\u5668",
+    notes: "\u672c\u5730\u7b14\u8bb0",
+    launcher: "\u5e94\u7528\u542f\u52a8\u5668",
+    save: "\u4fdd\u5b58\u7b14\u8bb0",
+    saved: "\u5df2\u4fdd\u5b58\u5728\u6b64\u6d4f\u89c8\u5668",
+    seq: "\u5e8f\u53f7",
+    code: "\u4ee3\u7801",
+    year: "\u5e74\u4efd",
+    score: "5 \u5206\u5236\u5206\u6570",
+    result: "4 \u5206\u5236\u7ed3\u679c"
   } : {
     number: "Bantuan nomor dokumen",
     date: "Format tanggal",
@@ -106,7 +120,7 @@ export function UtilitiesClient({ locale }: { locale: Locale }) {
         <div className="grid gap-3">
           {apps.slice(0, 6).map((app) => (
             <a key={app.slug} href={localePath(locale, `/apps/${app.slug}`)} className="rounded-2xl bg-slate-50 p-3 text-sm font-semibold text-navy transition hover:bg-teal/10">
-              {app.name[locale]}
+              {localized(app.name, locale)}
             </a>
           ))}
         </div>

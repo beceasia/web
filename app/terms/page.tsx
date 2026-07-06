@@ -3,15 +3,15 @@ import { PageShell } from "@/components/page-shell";
 
 export default function TermsPage() {
   return (
-    <PageShell locale="en" currentPath="/terms">
+    <PageShell locale="id" currentPath="/terms">
       <BasicPage
-        title="Terms"
-        description="By using bece.asia, you agree to treat every app as an independent community utility for learning, productivity, and public-safe workflows."
+        title="Ketentuan"
+        description="Dengan menggunakan bece.asia, pengguna memahami bahwa setiap aplikasi adalah utilitas komunitas independen untuk pembelajaran, produktivitas, dan alur kerja aman-publik."
         items={[
-          "Use the tools as references, prototypes, or productivity aids only.",
-          "Do not upload or enter restricted records, private identities, passwords, access tokens, or confidential operational information.",
-          "Users are responsible for checking laws, regulations, tariffs, and procedures through official channels.",
-          "Tools may change, be archived, or be replaced as apps are sanitized and moved into bece.asia."
+          "Gunakan alat sebagai referensi, prototipe, atau bantuan produktivitas.",
+          "Jangan mengunggah atau memasukkan catatan terbatas, identitas pribadi, kata sandi, token akses, atau informasi operasional rahasia.",
+          "Pengguna bertanggung jawab memeriksa hukum, regulasi, tarif, dan prosedur melalui kanal resmi.",
+          "Alat dapat berubah, diarsipkan, atau diganti ketika aplikasi disanitasi dan dipindahkan ke bece.asia."
         ]}
       />
     </PageShell>

@@ -3,11 +3,11 @@ import { PageShell } from "@/components/page-shell";
 
 export default function AboutPage() {
   return (
-    <PageShell locale="en" currentPath="/about">
+    <PageShell locale="id" currentPath="/about">
       <BasicPage
-        title="About bece.asia"
-        description="bece.asia is a portal for practical digital tools, lightweight apps, and productivity experiments."
-        items={["English by default", "Bahasa Indonesia option", "Neutral branding", "Vercel deployment", "Editable app catalog", "Community-built status"]}
+        title="Tentang bece.asia"
+        description="bece.asia adalah portal untuk tools digital praktis, aplikasi ringan, dan eksperimen produktivitas."
+        items={["Bahasa Indonesia sebagai default", "Pilihan bahasa Inggris dan China", "Branding netral", "Deployment Vercel", "Katalog aplikasi dapat diedit", "Status community-built"]}
       />
     </PageShell>
   );

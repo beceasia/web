@@ -2,11 +2,16 @@ import { ArrowRight, Sparkles } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import type { Locale } from "@/data/apps";
-import { t } from "@/data/i18n";
+import { t } from "@/data/i18n-safe";
 import { localePath } from "@/lib/routes";
 
 export function HeroSection({ locale }: { locale: Locale }) {
   const dict = t(locale);
+  const hubDescription = locale === "en"
+    ? "Sanitized tools, public launchers, and lightweight apps in one place."
+    : locale === "zh"
+      ? "\u7ecf\u8fc7\u6e05\u7406\u7684\u5de5\u5177\u3001\u516c\u5171\u542f\u52a8\u5668\u548c\u8f7b\u91cf\u5e94\u7528\u96c6\u4e2d\u5728\u4e00\u5904\u3002"
+      : "Tools yang disanitasi, launcher publik, dan aplikasi ringan dalam satu tempat.";
 
   return (
     <section className="relative overflow-hidden bg-[linear-gradient(180deg,#ffffff,#f7fafc)]">
@@ -34,7 +39,7 @@ export function HeroSection({ locale }: { locale: Locale }) {
             <p className="text-sm uppercase tracking-[0.24em] text-teal">bece.asia</p>
             <h2 className="mt-2 text-3xl font-black text-navy">Utility Hub</h2>
             <p className="mt-2 max-w-md text-sm leading-6 text-slate-600">
-              {locale === "en" ? "Sanitized tools, public launchers, and lightweight apps in one place." : "Tools yang disanitasi, launcher publik, dan aplikasi ringan dalam satu tempat."}
+              {hubDescription}
             </p>
           </div>
         </div>

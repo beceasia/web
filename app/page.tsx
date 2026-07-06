@@ -3,8 +3,8 @@ import { PageShell } from "@/components/page-shell";
 
 export default function HomePage() {
   return (
-    <PageShell locale="en" currentPath="/">
-      <HomeContent locale="en" />
+    <PageShell locale="id" currentPath="/">
+      <HomeContent locale="id" />
     </PageShell>
   );
 }

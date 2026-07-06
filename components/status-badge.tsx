@@ -1,5 +1,5 @@
 import type { AppStatus, Locale } from "@/data/apps";
-import { t } from "@/data/i18n";
+import { t } from "@/data/i18n-safe";
 
 const statusClass: Record<AppStatus, string> = {
   active: "bg-emerald-50 text-emerald-700 ring-emerald-200",

@@ -1,7 +1,8 @@
 import { ArrowUpRight, Boxes } from "lucide-react";
 import Link from "next/link";
 import type { AppItem, Locale } from "@/data/apps";
-import { t } from "@/data/i18n";
+import { localized } from "@/data/apps";
+import { t } from "@/data/i18n-safe";
 import { localePath } from "@/lib/routes";
 import { StatusBadge } from "./status-badge";
 
@@ -18,8 +19,8 @@ export function AppCard({ app, locale }: { app: AppItem; locale: Locale }) {
       </div>
       <div className="mt-5 flex-1">
         <p className="text-xs font-semibold uppercase tracking-[0.22em] text-teal">{app.category}</p>
-        <h3 className="mt-2 text-xl font-bold tracking-tight text-navy">{app.name[locale]}</h3>
-        <p className="mt-3 text-sm leading-6 text-slate-600">{app.tagline[locale]}</p>
+        <h3 className="mt-2 text-xl font-bold tracking-tight text-navy">{localized(app.name, locale)}</h3>
+        <p className="mt-3 text-sm leading-6 text-slate-600">{localized(app.tagline, locale)}</p>
       </div>
       <div className="mt-5 flex flex-wrap gap-2">
         {app.tags.slice(0, 3).map((tag) => (

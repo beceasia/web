@@ -1,11 +1,12 @@
-export type Locale = "en" | "id";
+export type Locale = "en" | "id" | "zh";
+export type Localized<T> = Record<"en" | "id", T> & Partial<Record<"zh", T>>;
 export type AppStatus = "active" | "beta" | "maintenance" | "experimental" | "archived";
 
 export type AppItem = {
   slug: string;
-  name: Record<Locale, string>;
-  tagline: Record<Locale, string>;
-  description: Record<Locale, string>;
+  name: Localized<string>;
+  tagline: Localized<string>;
+  description: Localized<string>;
   category: string;
   status: AppStatus;
   region: string;
@@ -14,7 +15,7 @@ export type AppItem = {
   embedUrl?: string;
   featured: boolean;
   tags: string[];
-  utilities: Record<Locale, string[]>;
+  utilities: Localized<string[]>;
   lastUpdated: string;
   officialStatus: "community-built";
 };
@@ -270,4 +271,8 @@ export function getAppBySlug(slug: string) {
 
 export function getFeaturedApps() {
   return apps.filter((app) => app.featured);
+}
+
+export function localized<T>(value: Localized<T>, locale: Locale): T {
+  return value[locale] ?? value.id ?? value.en;
 }

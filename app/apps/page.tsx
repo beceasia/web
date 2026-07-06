@@ -3,8 +3,8 @@ import { PageShell } from "@/components/page-shell";
 
 export default function AppsPage() {
   return (
-    <PageShell locale="en" currentPath="/apps">
-      <AppsPageContent locale="en" />
+    <PageShell locale="id" currentPath="/apps">
+      <AppsPageContent locale="id" />
     </PageShell>
   );
 }

@@ -3,11 +3,11 @@ import { PageShell } from "@/components/page-shell";
 
 export default function FeedbackPage() {
   return (
-    <PageShell locale="en" currentPath="/feedback">
+    <PageShell locale="id" currentPath="/feedback">
       <BasicPage
-        title="Feedback"
-        description="Feedback channels will be connected after the first public release."
-        items={["App idea", "Bug report", "Feature request", "Content correction", "Workflow suggestion", "Integration request"]}
+        title="Masukan"
+        description="Kanal masukan akan disambungkan setelah rilis publik pertama."
+        items={["Ide aplikasi", "Laporan bug", "Permintaan fitur", "Koreksi konten", "Saran workflow", "Permintaan integrasi"]}
       />
     </PageShell>
   );

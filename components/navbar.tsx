@@ -2,8 +2,9 @@ import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import type { Locale } from "@/data/apps";
+import { localized } from "@/data/apps";
 import { categories } from "@/data/categories";
-import { t } from "@/data/i18n";
+import { t } from "@/data/i18n-safe";
 import { localePath } from "@/lib/routes";
 import { LanguageSwitcher } from "./language-switcher";
 import { Logo } from "./logo";
@@ -19,10 +20,10 @@ export function Navbar({ locale, currentPath }: { locale: Locale; currentPath: s
   const about = [
     { label: dict.nav.about, path: "/about" },
     { label: dict.nav.feedback, path: "/feedback" },
-    { label: "Privacy", path: "/privacy" },
-    { label: "Terms", path: "/terms" },
+    { label: locale === "zh" ? "\u9690\u79c1" : locale === "id" ? "Privasi" : "Privacy", path: "/privacy" },
+    { label: locale === "zh" ? "\u6761\u6b3e" : locale === "id" ? "Ketentuan" : "Terms", path: "/terms" },
     { label: "Disclaimer", path: "/disclaimer" },
-    { label: "Data Policy", path: "/data-policy" }
+    { label: locale === "zh" ? "\u6570\u636e\u653f\u7b56" : locale === "id" ? "Kebijakan Data" : "Data Policy", path: "/data-policy" }
   ];
 
   return (
@@ -41,17 +42,17 @@ export function Navbar({ locale, currentPath }: { locale: Locale; currentPath: s
               <div className="mt-3 grid grid-cols-2 gap-2">
                 {categories.map((category) => (
                   <Link key={category.key} href={localePath(locale, `/apps?category=${encodeURIComponent(category.key)}`)} className="rounded-2xl px-4 py-3 transition hover:bg-slate-50">
-                    <span className="block text-sm font-bold text-navy">{category.label[locale]}</span>
-                    <span className="mt-1 line-clamp-2 block text-xs leading-5 text-slate-500">{category.description[locale]}</span>
+                    <span className="block text-sm font-bold text-navy">{localized(category.label, locale)}</span>
+                    <span className="mt-1 line-clamp-2 block text-xs leading-5 text-slate-500">{localized(category.description, locale)}</span>
                   </Link>
                 ))}
               </div>
             </div>
           </Dropdown>
-          <Dropdown label={locale === "en" ? "Resources" : "Referensi"}>
+          <Dropdown label={locale === "zh" ? "\u8d44\u6e90" : locale === "en" ? "Resources" : "Referensi"}>
             <MenuLinks items={resources} locale={locale} />
           </Dropdown>
-          <Dropdown label={locale === "en" ? "About" : "Info"}>
+          <Dropdown label={locale === "zh" ? "\u4fe1\u606f" : locale === "en" ? "About" : "Info"}>
             <MenuLinks items={about} locale={locale} />
           </Dropdown>
         </nav>
