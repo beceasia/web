@@ -7,9 +7,9 @@ import { Logo } from "./logo";
 export function Footer({ locale }: { locale: Locale }) {
   const dict = t(locale);
   const legalLabels = {
-    privacy: locale === "zh" ? "\u9690\u79c1" : locale === "id" ? "Privasi" : "Privacy",
-    terms: locale === "zh" ? "\u6761\u6b3e" : locale === "id" ? "Ketentuan" : "Terms",
-    dataPolicy: locale === "zh" ? "\u6570\u636e\u653f\u7b56" : locale === "id" ? "Kebijakan Data" : "Data Policy"
+    privacy: locale === "zh" ? "隐私" : locale === "id" ? "Privasi" : "Privacy",
+    terms: locale === "zh" ? "条款" : locale === "id" ? "Ketentuan" : "Terms",
+    dataPolicy: locale === "zh" ? "数据政策" : locale === "id" ? "Kebijakan Data" : "Data Policy"
   };
   return (
     <footer className="border-t border-slate-200 bg-white">
@@ -17,6 +17,7 @@ export function Footer({ locale }: { locale: Locale }) {
         <div className="space-y-4">
           <Logo locale={locale} />
           <p className="max-w-3xl text-sm leading-6 text-slate-600">{dict.footer.disclaimer}</p>
+          <p className="text-xs font-semibold text-slate-500">© 2026 bece.asia</p>
         </div>
         <div className="grid grid-cols-2 gap-3 text-sm">
           <Link href={localePath(locale, "/apps")} className="text-slate-600 hover:text-navy">{dict.nav.apps}</Link>
