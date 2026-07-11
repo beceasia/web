@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "privacy:audit": "node scripts/privacy-audit.mjs",
+    "privacy:audit:strict": "node scripts/privacy-audit.mjs --strict"
   },
   "dependencies": {
     "@tailwindcss/postcss": "latest",
