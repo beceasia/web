@@ -247,6 +247,22 @@ export const apps: AppItem[] = [
     officialStatus: "community-built"
   },
   {
+    slug: "kalkulator-sawit",
+    name: { en: "Palm Oil Export Calculator", id: "Kalkulator Sawit" },
+    tagline: { en: "Estimate export tax and levy for palm oil and derivative products.", id: "Simulasikan bea keluar dan pungutan ekspor sawit serta produk turunannya." },
+    description: { en: "A browser-based calculator for preliminary simulations of palm oil export tax and levy. Official figures must still be validated against the latest applicable regulations and official references.", id: "Kalkulator berbasis browser untuk simulasi awal bea keluar dan pungutan ekspor kelapa sawit serta produk turunannya. Angka resmi tetap harus divalidasi terhadap ketentuan dan referensi resmi terbaru." },
+    category: "Trade Tools",
+    status: "beta",
+    region: "Indonesia",
+    scope: "Export Calculation",
+    url: "/apps/kalkulator-sawit",
+    featured: true,
+    tags: ["palm oil", "export", "tax", "levy", "calculator"],
+    utilities: { en: ["Export tax estimate", "Levy simulation", "Transaction worksheet"], id: ["Estimasi bea keluar", "Simulasi pungutan", "Kertas kerja transaksi"] },
+    lastUpdated: "2026-07-11",
+    officialStatus: "community-built"
+  },
+  {
     slug: "umkm-workspace",
     name: { en: "MSME Workspace", id: "Workspace UMKM" },
     tagline: { en: "Organize MSME profiles, product notes, and assistance progress.", id: "Kelola profil UMKM, catatan produk, dan progres pendampingan." },
@@ -270,7 +286,10 @@ export function getAppBySlug(slug: string) {
 }
 
 export function getFeaturedApps() {
-  return apps.filter((app) => app.featured);
+  const featuredSlugs = ["btki-smart-search", "imei-helper", "kalkulator-sawit"];
+  return featuredSlugs
+    .map((slug) => apps.find((app) => app.slug === slug))
+    .filter((app): app is AppItem => Boolean(app));
 }
 
 export function localized<T>(value: Localized<T>, locale: Locale): T {

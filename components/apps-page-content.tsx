@@ -1,4 +1,4 @@
-import type { AppItem, Locale } from "@/data/apps";
+import type { Locale } from "@/data/apps";
 import { apps } from "@/data/apps";
 import { attendanceApps } from "@/data/attendance-apps";
 import { businessToolsApps } from "@/data/business-tools-apps";
@@ -7,35 +7,6 @@ import { creativeBusinessApps } from "@/data/creative-business-apps";
 import { t } from "@/data/i18n-safe";
 import { AppsClient } from "./apps-client";
 import { SectionHeading } from "./section-heading";
-
-const palmOilCalculator: AppItem = {
-  slug: "kalkulator-sawit",
-  name: {
-    en: "Palm Oil Export Calculator",
-    id: "Kalkulator Sawit",
-  },
-  tagline: {
-    en: "Estimate export tax and levy for palm oil and derivative products.",
-    id: "Simulasikan bea keluar dan pungutan ekspor sawit serta produk turunannya.",
-  },
-  description: {
-    en: "A browser-based calculator for preliminary simulations of palm oil export tax and levy. Official figures must still be validated against the latest applicable regulations and official references.",
-    id: "Kalkulator berbasis browser untuk simulasi awal bea keluar dan pungutan ekspor kelapa sawit serta produk turunannya. Angka resmi tetap harus divalidasi terhadap ketentuan dan referensi resmi terbaru.",
-  },
-  category: "Trade Tools",
-  status: "beta",
-  region: "Indonesia",
-  scope: "Export Calculation",
-  url: "/apps/kalkulator-sawit",
-  featured: true,
-  tags: ["palm oil", "export", "tax", "levy", "calculator"],
-  utilities: {
-    en: ["Export tax estimate", "Levy simulation", "Transaction worksheet"],
-    id: ["Estimasi bea keluar", "Simulasi pungutan", "Kertas kerja transaksi"],
-  },
-  lastUpdated: "2026-07-11",
-  officialStatus: "community-built",
-};
 
 export function AppsPageContent({ locale }: { locale: Locale }) {
   const dict = t(locale);
@@ -53,7 +24,7 @@ export function AppsPageContent({ locale }: { locale: Locale }) {
         description={description}
       />
       <div className="mt-8">
-        <AppsClient apps={[...apps, ...attendanceApps, ...businessToolsApps, ...creativeBusinessApps, ...communityGamesApps, palmOilCalculator]} locale={locale} />
+        <AppsClient apps={[...apps, ...attendanceApps, ...businessToolsApps, ...creativeBusinessApps, ...communityGamesApps]} locale={locale} />
       </div>
     </section>
   );
