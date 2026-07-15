@@ -4,6 +4,7 @@
   --color-navy: #001b4d;
   --color-navy-light: #08337d;
   --color-teal: #00a99d;
+  --color-gold: #f4b400;
   --color-soft: #f7fafc;
   --shadow-soft: 0 24px 80px rgba(0, 27, 77, 0.14);
 }
@@ -24,7 +25,7 @@ body {
   margin: 0;
   background: #f7fafc;
   color: #0f172a;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Inter, "Plus Jakarta Sans", Arial, Helvetica, sans-serif;
 }
 
 a {

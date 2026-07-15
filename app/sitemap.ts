@@ -9,9 +9,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const base = "https://www.bece.asia";
   const now = new Date();
   const core = ["", "/apps", "/utilities", "/roadmap", "/feedback", "/privacy", "/terms", "/disclaimer", "/data-policy"];
+  const marketIntelligence = ["/market-intelligence/hong-kong", "/en/market-intelligence/hong-kong", "/zh/market-intelligence/hong-kong"];
   const catalog = [...apps, ...businessToolsApps, ...creativeBusinessApps, ...communityGamesApps, ...attendanceApps];
   return [
     ...core.map((path) => ({ url: `${base}${path}`, lastModified: now, changeFrequency: "weekly" as const, priority: path === "" ? 1 : 0.7 })),
+    ...marketIntelligence.map((path) => ({ url: `${base}${path}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.75 })),
     ...catalog.map((item) => ({ url: `${base}${item.url}`, lastModified: new Date(item.lastUpdated), changeFrequency: "monthly" as const, priority: 0.6 })),
   ];
 }

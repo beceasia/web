@@ -12,6 +12,7 @@ import { Logo } from "./logo";
 export function Navbar({ locale, currentPath }: { locale: Locale; currentPath: string }) {
   const dict = t(locale);
   const resources = [
+    { label: locale === "zh" ? "\u5e02\u573a\u60c5\u62a5" : locale === "en" ? "Market Intelligence" : "Market Intelligence", path: "/market-intelligence/hong-kong" },
     { label: dict.nav.utilities, path: "/utilities" },
     { label: dict.nav.docs, path: "/docs" },
     { label: dict.nav.useCases, path: "/use-cases" },
