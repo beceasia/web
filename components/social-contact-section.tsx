@@ -1,4 +1,4 @@
-import { ArrowUpRight, Instagram, MessageCircle, Sparkles } from "lucide-react";
+import { ArrowUpRight, MessageCircle, Sparkles } from "lucide-react";
 import type { Locale } from "@/data/apps";
 import { INSTAGRAM_URL, WHATSAPP_DISPLAY, whatsappUrl } from "@/data/contact";
 
@@ -61,7 +61,7 @@ export function SocialContactSection({ locale }: { locale: Locale }) {
               {copy.whatsapp}
             </a>
             <a href={INSTAGRAM_URL} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-navy transition hover:border-teal/40 hover:text-teal">
-              <Instagram size={18} />
+              <Sparkles size={18} />
               {copy.instagram}
             </a>
           </div>
@@ -76,7 +76,7 @@ export function SocialContactSection({ locale }: { locale: Locale }) {
             {instagramItems.map((item) => (
               <a key={item.title.en} href={INSTAGRAM_URL} target="_blank" rel="noreferrer" className="group rounded-2xl border border-slate-200 bg-soft p-5 transition hover:-translate-y-1 hover:border-teal/40 hover:bg-white hover:shadow-soft">
                 <div className="flex items-start justify-between gap-4">
-                  <Instagram size={20} className="text-teal" />
+                  <Sparkles size={20} className="text-teal" />
                   <ArrowUpRight size={17} className="text-slate-400 transition group-hover:text-teal" />
                 </div>
                 <h3 className="mt-4 text-base font-black text-navy">{item.title[locale] ?? item.title.id}</h3>
