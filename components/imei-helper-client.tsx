@@ -70,7 +70,7 @@ const statusLabels: Record<CarrierStatus, string> = {
   penumpang: "Penumpang biasa",
   haji: "Jemaah haji khusus",
   awak: "Awak sarana pengangkut",
-  "penumpang-kantor": "Penumpang biasa melalui kanal lanjutan",
+  "penumpang-kantor": "Tanpa pembebasan",
 };
 
 function formatRupiah(value: number) {
@@ -156,6 +156,17 @@ export function ImeiHelperClient() {
     setStopReason(reason);
     setStopDetail(detail);
     goTo("stop");
+  }
+
+  function startQuickCalculation(status: CarrierStatus) {
+    setAnswers({ status, jumlah: 1 });
+    setStopReason("");
+    setStopDetail("");
+    setJumlahUnit(1);
+    setCurrency("USD");
+    setPrice("");
+    setResult(null);
+    goTo(9);
   }
 
   function choose<K extends keyof Answers>(key: K, value: Answers[K]) {
@@ -292,7 +303,13 @@ export function ImeiHelperClient() {
           </div>
         </div>
 
-        {step === 0 ? <Landing onStart={() => goTo(1)} /> : null}
+        {step === 0 ? (
+          <Landing
+            onStart={() => goTo(1)}
+            onQuickWithExemption={() => startQuickCalculation("penumpang")}
+            onQuickNoExemption={() => startQuickCalculation("penumpang-kantor")}
+          />
+        ) : null}
 
         {step === 1 ? (
           <StepCard number="1" title="Asal Barang" subtitle="Pertanyaan pertama dari 8" onBack={() => goTo(0)}>
@@ -380,7 +397,7 @@ export function ImeiHelperClient() {
             <Option icon={UsersRound} title="Penumpang biasa" description="Pembebasan USD 500" onClick={() => choose("status", "penumpang")} />
             <Option icon={BadgeCheck} title="Jemaah haji khusus" description="Pembebasan USD 2.500" onClick={() => choose("status", "haji")} />
             <Option icon={Plane} title="Awak sarana pengangkut" description="Pembebasan USD 50" onClick={() => choose("status", "awak")} />
-            <Option icon={Building2} title="Kanal lanjutan setelah kedatangan" description="Tidak mendapat pembebasan" tone="red" onClick={() => choose("status", "penumpang-kantor")} />
+            <Option icon={Building2} title="Tanpa pembebasan" description="Hitung penuh tanpa pengurang pembebasan" tone="red" onClick={() => choose("status", "penumpang-kantor")} />
           </StepCard>
         ) : null}
 
@@ -442,7 +459,15 @@ export function ImeiHelperClient() {
   );
 }
 
-function Landing({ onStart }: { onStart: () => void }) {
+function Landing({
+  onStart,
+  onQuickWithExemption,
+  onQuickNoExemption,
+}: {
+  onStart: () => void;
+  onQuickWithExemption: () => void;
+  onQuickNoExemption: () => void;
+}) {
   return (
     <div className="overflow-hidden rounded-[2rem] border border-white/20 bg-white p-8 text-center shadow-2xl sm:p-10">
       <div className="mx-auto mb-7 grid h-24 w-24 place-items-center rounded-3xl bg-gradient-to-br from-teal to-cyan-500 text-white shadow-2xl">
@@ -458,9 +483,41 @@ function Landing({ onStart }: { onStart: () => void }) {
         <MiniFeature icon={Calculator} title="Hitung estimasi" description="BM dan PPN" />
         <MiniFeature icon={ShieldCheck} title="Public-safe" description="Tanpa data lama" />
       </div>
-      <PrimaryButton onClick={onStart} className="mt-8">Mulai screening</PrimaryButton>
+      <div className="mt-8 grid gap-3 text-left sm:grid-cols-2">
+        <QuickAction
+          icon={Gift}
+          title="Langsung hitung: ada pembebasan"
+          description="Pakai pembebasan penumpang biasa USD 500"
+          onClick={onQuickWithExemption}
+        />
+        <QuickAction
+          icon={CircleDollarSign}
+          title="Langsung hitung: tanpa pembebasan"
+          description="Hitung penuh tanpa pengurang nilai barang"
+          onClick={onQuickNoExemption}
+        />
+      </div>
+      <PrimaryButton onClick={onStart} className="mt-5">Mulai screening lengkap</PrimaryButton>
       <p className="mt-5 text-xs text-slate-400">Registrasi IMEI tidak dipungut biaya layanan. Pungutan yang dihitung hanya estimasi BM dan PPN.</p>
     </div>
+  );
+}
+
+function QuickAction({ icon: Icon, title, description, onClick }: { icon: LucideIcon; title: string; description: string; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="group flex min-h-[112px] items-center gap-4 rounded-2xl border-2 border-slate-200 bg-slate-50 p-4 text-left transition hover:border-teal hover:bg-teal/5 focus:outline-none focus:ring-4 focus:ring-teal/20"
+    >
+      <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-white text-teal shadow-sm transition group-hover:bg-teal group-hover:text-white">
+        <Icon size={22} />
+      </span>
+      <span>
+        <span className="block text-sm font-black leading-5 text-navy">{title}</span>
+        <span className="mt-1 block text-xs font-medium leading-5 text-slate-500">{description}</span>
+      </span>
+      <ArrowRight className="ml-auto shrink-0 text-slate-300 transition group-hover:translate-x-1 group-hover:text-teal" size={18} />
+    </button>
   );
 }
 

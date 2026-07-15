@@ -337,10 +337,10 @@
             <div>
               <label>Kurs KMK / Kurs Pajak</label>
               <div class="input-group">
-                <input id="kurs" type="number" step="0.01" min="0" value="17805" />
+                <input id="kurs" type="number" step="0.01" min="0" value="18031" />
                 <button id="btnCekKurs" type="button" class="secondary">Cek KMK</button>
               </div>
-              <div class="muted small" id="kursInfo">Default: USD Rp17.805,00 sesuai KMK 25/MK/EF.2/2026 untuk 3 Juni 2026 s.d. 9 Juni 2026. Perbarui manual jika tanggal PEB memakai KMK periode lain.</div>
+              <div class="muted small" id="kursInfo">Mengambil kurs pajak Kementerian Keuangan otomatis. Nilai tetap dapat diubah manual jika tanggal PEB memakai KMK periode lain.</div>
             </div>
             <div>
               <label>HPE/Harga Referensi USD/MT</label>
@@ -400,7 +400,7 @@
           </div>
 
           <div class="notice" style="margin-top:14px">
-            Validasi V3.3: untuk Harga Referensi CPO US$1.000,90/MT periode Juli 2026, aplikasi membaca range lebih dari US$980 sampai dengan US$1.030 per MT dan memakai kolom angka 8 Lampiran C PMK 38/2024 untuk Bea Keluar. Kurs KMK harus diisi manual sesuai KMK yang berlaku pada tanggal PEB.
+            Validasi V3.4: untuk Harga Referensi CPO US$1.000,90/MT periode Juli 2026, aplikasi membaca range lebih dari US$980 sampai dengan US$1.030 per MT dan memakai kolom angka 8 Lampiran C PMK 38/2024 untuk Bea Keluar. Kurs KMK otomatis mengambil Kurs Pajak Kementerian Keuangan dan tetap dapat disesuaikan manual sesuai KMK pada tanggal PEB.
           </div>
 
           <h3>Rincian Lookup</h3>
@@ -542,6 +542,7 @@
     const fmtUSD = (n) => "USD " + Number(n || 0).toLocaleString("en-US", {minimumFractionDigits: 2, maximumFractionDigits: 2});
     const fmtIDR = (n) => "IDR " + Number(n || 0).toLocaleString("id-ID", {maximumFractionDigits: 0});
     const fmtNum = (n) => Number(n || 0).toLocaleString("id-ID", {maximumFractionDigits: 4});
+    const fmtKurs = (n) => "Rp" + Number(n || 0).toLocaleString("id-ID", {minimumFractionDigits: 2, maximumFractionDigits: 2});
     const clean = (x) => (x ?? "").toString().trim();
 
     function showToast(message, type = "") {
@@ -566,6 +567,32 @@
     function safeAmount(value) {
       const n = Number(value);
       return Number.isFinite(n) ? n : 0;
+    }
+
+    async function fetchKemenkeuKurs({silent = false} = {}) {
+      const kursInput = $("kurs");
+      const kursInfo = $("kursInfo");
+      if (kursInfo) kursInfo.textContent = "Mengambil kurs pajak Kementerian Keuangan...";
+      if (!silent) showToast("Mengambil Kurs Pajak Kemenkeu...", "ok");
+
+      try {
+        const response = await fetch("/api/kemenkeu-kurs", {cache: "no-store"});
+        if (!response.ok) throw new Error("Kurs Kemenkeu tidak tersedia");
+        const data = await response.json();
+        const rate = Number(data?.rate);
+        if (!Number.isFinite(rate) || rate <= 0) throw new Error("Nilai kurs tidak valid");
+
+        kursInput.value = String(rate);
+        const kmk = clean(data?.kmk) ? ` ${clean(data.kmk)}.` : "";
+        const period = clean(data?.period) ? ` Periode: ${clean(data.period)}.` : "";
+        if (kursInfo) kursInfo.textContent = `Kurs pajak Kemenkeu otomatis: USD ${fmtKurs(rate)}.${kmk}${period} Ubah manual jika tanggal PEB memakai KMK periode lain.`;
+        if (!silent) showToast("Kurs Pajak Kemenkeu berhasil diperbarui.", "ok");
+        return true;
+      } catch (err) {
+        if (kursInfo) kursInfo.textContent = "Gagal membaca kurs pajak Kementerian Keuangan otomatis. Gunakan kurs manual bila diperlukan.";
+        if (!silent) showToast("Gagal membaca Kurs Pajak Kemenkeu. Gunakan kurs manual.", "bad");
+        return false;
+      }
     }
 
     function createId() {
@@ -1141,7 +1168,7 @@
       if (hsVal) $("hs").value = hsVal;
       $("volume").value = ex["Volume"] || "";
       $("fob").value = ex["FOB USD"] || "";
-      $("kurs").value = ex["Kurs"] || "17805";
+      $("kurs").value = ex["Kurs"] || "18031";
       $("catatan").value = ex["Catatan"] || "Contoh simulasi, bukan data resmi.";
       autoLookup();
       calculate();
@@ -1164,16 +1191,7 @@
     $("produk").addEventListener("change", updateHsOptions);
     $("hs").addEventListener("change", autoLookup);
     $("bulan").addEventListener("change", () => { autoLookup(); renderKpis(); });
-    $("btnCekKurs").addEventListener("click", () => {
-      const link = document.createElement("a");
-      link.href = "https://fiskal.kemenkeu.go.id/informasi-publik/kurs-pajak";
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      showToast("Halaman Kurs Pajak Kemenkeu dibuka. Salin kurs yang berlaku ke kolom Kurs.", "ok");
-    });
+    $("btnCekKurs").addEventListener("click", () => fetchKemenkeuKurs());
     $("btnHitung").addEventListener("click", calculate);
     $("btnTambah").addEventListener("click", addTransaction);
     $("btnContoh").addEventListener("click", loadExample);
@@ -1214,6 +1232,7 @@
     renderValidation();
     renderAdminStatus();
     autoLookup();
+    fetchKemenkeuKurs({silent: true});
     setTimeout(flushBackendQueue, 1500);
     console.info("Service worker dinonaktifkan pada versi embed bece.asia agar tidak bentrok dengan routing situs utama.");
   </script>
