@@ -1,13 +1,21 @@
-import { ArrowUpRight, Boxes } from "lucide-react";
+import { ArrowUpRight, Boxes, MessageCircle } from "lucide-react";
 import Link from "next/link";
 import type { AppItem, Locale } from "@/data/apps";
 import { localized } from "@/data/apps";
+import { whatsappUrl } from "@/data/contact";
 import { t } from "@/data/i18n-safe";
 import { localePath } from "@/lib/routes";
 import { StatusBadge } from "./status-badge";
 
 export function AppCard({ app, locale }: { app: AppItem; locale: Locale }) {
   const dict = t(locale);
+  const appName = localized(app.name, locale);
+  const whatsappLabel = locale === "en" ? "Consult" : locale === "zh" ? "\u54a8\u8be2" : "Konsultasi";
+  const whatsappMessage = locale === "en"
+    ? `Hello bece.asia, I want to consult about export/import, digital products, or a custom app based on ${appName}.`
+    : locale === "zh"
+      ? `Hello bece.asia, I want to consult about export/import, digital products, or a custom app based on ${appName}.`
+      : `Halo bece.asia, saya ingin konsultasi ekspor/impor, produk digital, atau custom app berdasarkan ${appName}.`;
 
   return (
     <article className="group flex h-full flex-col rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-teal/40 hover:shadow-soft">
@@ -32,6 +40,10 @@ export function AppCard({ app, locale }: { app: AppItem; locale: Locale }) {
           {dict.apps.detail}
           <ArrowUpRight size={16} />
         </Link>
+        <a href={whatsappUrl(whatsappMessage)} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700 transition hover:border-emerald-300 hover:bg-emerald-100">
+          <MessageCircle size={16} />
+          {whatsappLabel}
+        </a>
       </div>
     </article>
   );

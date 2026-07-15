@@ -7,6 +7,7 @@ import { utilities } from "@/data/utilities";
 import { AppGrid } from "./app-grid";
 import { HeroSection } from "./hero-section";
 import { SectionHeading } from "./section-heading";
+import { SocialContactSection } from "./social-contact-section";
 
 const useCaseIcons = [Workflow, FileText, BarChart3, Globe2, GraduationCap, Layers3];
 
@@ -49,6 +50,8 @@ export function HomeContent({ locale }: { locale: Locale }) {
           <AppGrid apps={getFeaturedApps()} locale={locale} />
         </div>
       </section>
+
+      <SocialContactSection locale={locale} />
 
       <section className="bg-white py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

@@ -1,8 +1,9 @@
-import { ArrowLeft, ArrowUpRight, Info as InfoIcon, PanelTopOpen } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, Info as InfoIcon, MessageCircle, PanelTopOpen } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Locale } from "@/data/apps";
 import { getAppBySlug, localized } from "@/data/apps";
+import { WHATSAPP_DISPLAY, whatsappUrl } from "@/data/contact";
 import { t } from "@/data/i18n-safe";
 import { localePath } from "@/lib/routes";
 import { StatusBadge } from "./status-badge";
@@ -12,6 +13,7 @@ export function AppDetailContent({ slug, locale }: { slug: string; locale: Local
   if (!app) notFound();
 
   const dict = t(locale);
+  const appName = localized(app.name, locale);
   const copy = {
     publicNotice: locale === "en"
       ? "Public-use notice: this tool is independently maintained by bece.asia, is not an official government service, and must not be used as a substitute for official systems, regulations, or source documents. Do not enter confidential, personal, or operational data."
@@ -20,6 +22,17 @@ export function AppDetailContent({ slug, locale }: { slug: string; locale: Local
         : "Pemberitahuan penggunaan publik: alat ini dikelola independen oleh bece.asia, bukan layanan resmi pemerintah, dan tidak menggantikan sistem, peraturan, atau dokumen sumber resmi. Jangan memasukkan data rahasia, pribadi, atau operasional.",
     embeddedApp: locale === "en" ? "Embedded app" : locale === "zh" ? "\u5d4c\u5165\u5e94\u7528" : "Aplikasi tertempel",
     openFullPage: locale === "en" ? "Open full page" : locale === "zh" ? "\u6253\u5f00\u5b8c\u6574\u9875\u9762" : "Buka layar penuh",
+    consult: locale === "en" ? "Consult on WhatsApp" : locale === "zh" ? "WhatsApp \u54a8\u8be2" : "Konsultasi via WhatsApp",
+    consultNote: locale === "en"
+      ? `Export-import consultation, digital products, and custom app requests: ${WHATSAPP_DISPLAY}.`
+      : locale === "zh"
+        ? `Export-import consultation, digital products, and custom app requests: ${WHATSAPP_DISPLAY}.`
+        : `Konsultasi ekspor-impor, produk digital, dan kebutuhan custom app: ${WHATSAPP_DISPLAY}.`,
+    whatsappMessage: locale === "en"
+      ? `Hello bece.asia, I want to consult about export/import, digital products, or a custom app based on ${appName}.`
+      : locale === "zh"
+        ? `Hello bece.asia, I want to consult about export/import, digital products, or a custom app based on ${appName}.`
+        : `Halo bece.asia, saya ingin konsultasi ekspor/impor, produk digital, atau custom app berdasarkan ${appName}.`,
     internalTitle: locale === "en" ? "Internal version in preparation" : locale === "zh" ? "\u5185\u90e8\u7248\u672c\u6b63\u5728\u51c6\u5907" : "Versi internal sedang disiapkan",
     internalDescription: locale === "en"
       ? "This app is listed as a sanitized public concept. The runnable version will appear here after its old source is copied, cleaned, and checked for public-safe data."
@@ -67,6 +80,17 @@ export function AppDetailContent({ slug, locale }: { slug: string; locale: Local
               <ArrowUpRight size={17} />
             </a>
           ) : null}
+          <a href={whatsappUrl(copy.whatsappMessage)} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-emerald-700">
+            <MessageCircle size={17} />
+            {copy.consult}
+          </a>
+        </div>
+      </div>
+
+      <div className="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-5 text-sm leading-6 text-emerald-900">
+        <div className="flex gap-3">
+          <MessageCircle className="mt-0.5 shrink-0 text-emerald-600" size={18} />
+          <p>{copy.consultNote}</p>
         </div>
       </div>
 
