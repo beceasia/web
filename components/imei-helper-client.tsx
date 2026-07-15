@@ -114,23 +114,25 @@ export function ImeiHelperClient() {
   const [currency, setCurrency] = useState<Currency>("USD");
   const [price, setPrice] = useState("");
   const [exchangeRate, setExchangeRate] = useState(15800);
-  const [kursStatus, setKursStatus] = useState("Kurs default: Rp 15.800. Silakan ubah jika perlu.");
+  const [kursStatus, setKursStatus] = useState("Mengambil kurs pajak Kementerian Keuangan...");
   const [result, setResult] = useState<Result | null>(null);
 
   useEffect(() => {
     let active = true;
     async function fetchExchangeRate() {
       try {
-        const response = await fetch("https://api.exchangerate-api.com/v4/latest/USD");
+        const response = await fetch("/api/kemenkeu-kurs", { cache: "no-store" });
         if (!response.ok) throw new Error("rate unavailable");
         const data = await response.json();
-        const idr = Math.round(Number(data?.rates?.IDR));
+        const idr = Math.round(Number(data?.rate));
         if (active && Number.isFinite(idr) && idr > 0) {
           setExchangeRate(idr);
-          setKursStatus(`Kurs referensi terbaca: Rp ${formatNumber(idr)} per USD.`);
+          const period = typeof data?.period === "string" && data.period ? ` Periode: ${data.period}.` : "";
+          const kmk = typeof data?.kmk === "string" && data.kmk ? ` ${data.kmk}.` : "";
+          setKursStatus(`Kurs pajak Kemenkeu terbaca: Rp ${formatNumber(idr)} per USD.${kmk}${period}`);
         }
       } catch {
-        if (active) setKursStatus("Gagal membaca kurs otomatis. Gunakan kurs manual bila diperlukan.");
+        if (active) setKursStatus("Gagal membaca kurs pajak Kemenkeu otomatis. Gunakan kurs manual bila diperlukan.");
       }
     }
     fetchExchangeRate();
