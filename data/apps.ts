@@ -259,7 +259,7 @@ export const apps: AppItem[] = [
     featured: true,
     tags: ["palm oil", "export", "tax", "levy", "calculator"],
     utilities: { en: ["Export tax estimate", "Levy simulation", "Transaction worksheet"], id: ["Estimasi bea keluar", "Simulasi pungutan", "Kertas kerja transaksi"] },
-    lastUpdated: "2026-07-11",
+    lastUpdated: "2026-07-15",
     officialStatus: "community-built"
   },
   {
