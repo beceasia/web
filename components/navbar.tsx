@@ -11,8 +11,8 @@ import { Logo } from "./logo";
 
 export function Navbar({ locale, currentPath }: { locale: Locale; currentPath: string }) {
   const dict = t(locale);
+  const marketIntelligenceLabel = locale === "zh" ? "\u5e02\u573a\u60c5\u62a5" : "Market Intelligence";
   const resources = [
-    { label: locale === "zh" ? "\u5e02\u573a\u60c5\u62a5" : locale === "en" ? "Market Intelligence" : "Market Intelligence", path: "/market-intelligence/hong-kong" },
     { label: dict.nav.utilities, path: "/utilities" },
     { label: dict.nav.docs, path: "/docs" },
     { label: dict.nav.useCases, path: "/use-cases" },
@@ -50,6 +50,9 @@ export function Navbar({ locale, currentPath }: { locale: Locale; currentPath: s
               </div>
             </div>
           </Dropdown>
+          <Link href={localePath(locale, "/market-intelligence")} className="rounded-full px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-navy">
+            {marketIntelligenceLabel}
+          </Link>
           <Dropdown label={locale === "zh" ? "\u8d44\u6e90" : locale === "en" ? "Resources" : "Referensi"}>
             <MenuLinks items={resources} locale={locale} />
           </Dropdown>

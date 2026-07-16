@@ -13,6 +13,18 @@ export type MarketRisk = {
   solution: Localized<string>;
 };
 
+export type MarketCountry = {
+  slug: string;
+  country: Localized<string>;
+  region: Localized<string>;
+  status: Localized<string>;
+  opportunity: Localized<string>;
+  summary: Localized<string>;
+  products: Localized<string[]>;
+  updatedAt: string;
+  href: string;
+};
+
 export const hongKongMarket = {
   slug: "hong-kong",
   country: { en: "Hong Kong", id: "Hong Kong", zh: "香港" },
@@ -178,6 +190,40 @@ export const hongKongMarket = {
     { label: "ITC Trade Map", url: "https://www.trademap.org/" },
   ],
 };
+
+export const marketCountries: MarketCountry[] = [
+  {
+    slug: hongKongMarket.slug,
+    country: hongKongMarket.country,
+    region: {
+      id: "Asia Timur",
+      en: "East Asia",
+      zh: "\u4e1c\u4e9a",
+    },
+    status: {
+      id: "Laporan tersedia",
+      en: "Report available",
+      zh: "\u62a5\u544a\u5df2\u53d1\u5e03",
+    },
+    opportunity: {
+      id: "Tinggi",
+      en: "High",
+      zh: "\u9ad8",
+    },
+    summary: {
+      id: "Free port economy, hub logistik Asia, dan pasar impor yang menarik untuk kopi, rempah, produk halal, kelapa, serta produk natural beauty Indonesia.",
+      en: "A free port economy, Asian logistics hub, and import-driven market for Indonesian coffee, spices, halal products, coconut derivatives, and natural beauty products.",
+      zh: "\u9999\u6e2f\u662f\u81ea\u7531\u6e2f\u7ecf\u6d4e\u4f53\u548c\u4e9a\u6d32\u7269\u6d41\u67a2\u7ebd\uff0c\u9002\u5408\u5370\u5c3c\u5496\u5561\u3001\u9999\u6599\u3001\u6e05\u771f\u98df\u54c1\u3001\u690d\u7269\u57fa\u7f8e\u5bb9\u4ea7\u54c1\u548c\u6930\u5b50\u884d\u751f\u54c1\u3002",
+    },
+    products: {
+      id: ["Kopi", "Rempah", "Halal food", "Kelapa", "Natural beauty"],
+      en: ["Coffee", "Spices", "Halal food", "Coconut", "Natural beauty"],
+      zh: ["\u5496\u5561", "\u9999\u6599", "\u6e05\u771f\u98df\u54c1", "\u6930\u5b50", "\u5929\u7136\u7f8e\u5bb9"],
+    },
+    updatedAt: "2026-07-15",
+    href: "/market-intelligence/hong-kong",
+  },
+];
 
 export function marketText<T>(value: Localized<T>, locale: Locale): T {
   return value[locale] ?? value.id ?? value.en;

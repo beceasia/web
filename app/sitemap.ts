@@ -9,7 +9,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const base = "https://www.bece.asia";
   const now = new Date();
   const core = ["", "/apps", "/utilities", "/roadmap", "/feedback", "/privacy", "/terms", "/disclaimer", "/data-policy"];
-  const marketIntelligence = ["/market-intelligence/hong-kong", "/en/market-intelligence/hong-kong", "/zh/market-intelligence/hong-kong"];
+  const marketIntelligence = [
+    "/market-intelligence",
+    "/en/market-intelligence",
+    "/zh/market-intelligence",
+    "/market-intelligence/hong-kong",
+    "/en/market-intelligence/hong-kong",
+    "/zh/market-intelligence/hong-kong"
+  ];
   const catalog = [...apps, ...businessToolsApps, ...creativeBusinessApps, ...communityGamesApps, ...attendanceApps];
   return [
     ...core.map((path) => ({ url: `${base}${path}`, lastModified: now, changeFrequency: "weekly" as const, priority: path === "" ? 1 : 0.7 })),
