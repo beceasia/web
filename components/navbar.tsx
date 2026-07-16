@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import type { Locale } from "@/data/apps";
 import { localized } from "@/data/apps";
 import { categories } from "@/data/categories";
+import { exportOsCopy } from "@/data/export-os";
 import { t } from "@/data/i18n-safe";
 import { localePath } from "@/lib/routes";
 import { LanguageSwitcher } from "./language-switcher";
@@ -34,6 +35,9 @@ export function Navbar({ locale, currentPath }: { locale: Locale; currentPath: s
         <nav className="hidden items-center gap-1 lg:flex">
           <Link href={localePath(locale)} className="rounded-full px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-navy">
             {dict.nav.home}
+          </Link>
+          <Link href={localePath(locale, "/export-os")} className="rounded-full px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-navy">
+            {exportOsCopy[locale].nav}
           </Link>
           <Dropdown label={dict.nav.apps}>
             <div className="w-[34rem] p-3">
