@@ -36,9 +36,15 @@ export function Navbar({ locale, currentPath }: { locale: Locale; currentPath: s
           <Link href={localePath(locale)} className="rounded-full px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-navy">
             {dict.nav.home}
           </Link>
-          <Link href={localePath(locale, "/export-os")} className="rounded-full px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-navy">
-            {exportOsCopy[locale].nav}
-          </Link>
+          <Dropdown label={exportOsCopy[locale].nav}>
+            <MenuLinks
+              locale={locale}
+              items={[
+                { label: locale === "zh" ? "平台概览" : locale === "en" ? "Platform overview" : "Ikhtisar platform", path: "/export-os" },
+                { label: locale === "zh" ? "情报工作台" : locale === "en" ? "Intelligence workspace" : "Workspace intelligence", path: "/export-os/intelligence" },
+              ]}
+            />
+          </Dropdown>
           <Dropdown label={dict.nav.apps}>
             <div className="w-[34rem] p-3">
               <Link href={localePath(locale, "/apps")} className="block rounded-2xl bg-slate-50 px-4 py-3 text-sm font-bold text-navy transition hover:bg-teal/10">

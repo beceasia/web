@@ -354,8 +354,8 @@ export function ExportOsPlatformClient({ locale }: { locale: Locale }) {
                 <p className="mt-4 max-w-3xl text-base leading-7 text-slate-300">The moat is company readiness data, product-country intelligence, buyer signals, and workflow history. Marketplace liquidity becomes easier once BECE owns this data layer.</p>
               </div>
               <div className="flex flex-wrap gap-3 lg:justify-end">
-                <Link href={localePath(locale, "/market-intelligence")} className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-bold text-navy transition hover:bg-slate-100">
-                  Open Market Intelligence
+                <Link href={localePath(locale, "/export-os/intelligence")} className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-bold text-navy transition hover:bg-slate-100">
+                  {locale === "id" ? "Buka Phase 2 Workspace" : locale === "zh" ? "打开第二阶段工作台" : "Open Phase 2 Workspace"}
                   <ArrowRight size={16} />
                 </Link>
                 <a href={whatsappUrl("Hello bece.asia, I want to discuss the BECE Export OS SaaS roadmap and implementation.")} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-5 py-3 text-sm font-bold text-white transition hover:bg-white/15">

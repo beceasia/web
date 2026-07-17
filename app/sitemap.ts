@@ -8,7 +8,7 @@ import { attendanceApps } from "@/data/attendance-apps";
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = "https://www.bece.asia";
   const now = new Date();
-  const core = ["", "/export-os", "/en/export-os", "/zh/export-os", "/apps", "/utilities", "/roadmap", "/feedback", "/privacy", "/terms", "/disclaimer", "/data-policy"];
+  const core = ["", "/export-os", "/en/export-os", "/zh/export-os", "/export-os/intelligence", "/en/export-os/intelligence", "/zh/export-os/intelligence", "/apps", "/utilities", "/roadmap", "/feedback", "/privacy", "/terms", "/disclaimer", "/data-policy"];
   const marketIntelligence = [
     "/market-intelligence",
     "/en/market-intelligence",
