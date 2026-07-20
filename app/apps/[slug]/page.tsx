@@ -3,7 +3,7 @@ import { PageShell } from "@/components/page-shell";
 import { apps } from "@/data/apps";
 
 export function generateStaticParams() {
-  return apps.map((app) => ({ slug: app.slug }));
+  return apps.filter((app) => app.slug !== "btki-smart-search").map((app) => ({ slug: app.slug }));
 }
 
 export default async function AppDetailPage({ params }: { params: Promise<{ slug: string }> }) {

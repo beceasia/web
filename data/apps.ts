@@ -199,9 +199,9 @@ export const apps: AppItem[] = [
   },
   {
     slug: "btki-smart-search",
-    name: { en: "BTKI Smart Search", id: "BTKI Smart Search" },
-    tagline: { en: "Search HS references, compare codes, and prepare classification notes.", id: "Cari referensi HS, bandingkan kode, dan susun catatan klasifikasi." },
-    description: { en: "A browser-based helper for exploring tariff references, comparing HS codes, and preparing neutral classification notes. The bundled dataset is sample/reference material and should be validated against official sources before use.", id: "Helper berbasis browser untuk menelusuri referensi tarif, membandingkan kode HS, dan menyusun catatan klasifikasi netral. Dataset bawaan bersifat contoh/referensi dan tetap perlu divalidasi ke sumber resmi sebelum digunakan." },
+    name: { en: "Export Product Intelligence", id: "Export Product Intelligence", zh: "出口产品情报" },
+    tagline: { en: "Discover products, compare market opportunities, and open complete BTKI references.", id: "Temukan produk, bandingkan peluang pasar, dan buka referensi BTKI lengkap.", zh: "发现产品、比较市场机会并查询完整BTKI参考。" },
+    description: { en: "An AI-style export discovery workspace combining product intelligence, market ranking, buyer demo signals, price benchmarks, and complete BTKI lookup.", id: "Workspace discovery ekspor bergaya AI yang menggabungkan intelijen produk, peringkat pasar, sinyal buyer demo, benchmark harga, dan pencarian BTKI lengkap.", zh: "融合产品情报、市场排名、演示买家信号、价格基准和完整BTKI查询的AI风格出口发现工作区。" },
     category: "Trade Tools",
     status: "beta",
     region: "Indonesia",
@@ -209,9 +209,9 @@ export const apps: AppItem[] = [
     url: "/apps/btki-smart-search",
     embedUrl: "/apps/btki-smart-search.html",
     featured: true,
-    tags: ["HS", "BTKI", "tariff", "classification"],
-    utilities: { en: ["HS search", "Code comparison", "Classification notes"], id: ["Pencarian HS", "Perbandingan kode", "Catatan klasifikasi"] },
-    lastUpdated: "2026-07-06",
+    tags: ["HS", "BTKI", "intelligence", "market", "classification"],
+    utilities: { en: ["Opportunity discovery", "Product intelligence", "Market comparison", "BTKI lookup"], id: ["Discovery peluang", "Intelijen produk", "Perbandingan pasar", "Pencarian BTKI"], zh: ["机会发现", "产品情报", "市场比较", "BTKI查询"] },
+    lastUpdated: "2026-07-20",
     officialStatus: "community-built"
   },
   {

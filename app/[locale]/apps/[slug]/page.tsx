@@ -11,7 +11,7 @@ function resolveLocale(locale: string): Locale {
 }
 
 export function generateStaticParams() {
-  return supportedLocales.flatMap((locale) => apps.map((app) => ({ locale, slug: app.slug })));
+  return supportedLocales.flatMap((locale) => apps.filter((app) => app.slug !== "btki-smart-search").map((app) => ({ locale, slug: app.slug })));
 }
 
 export default async function LocalizedAppDetailPage({ params }: { params: Promise<{ locale: string; slug: string }> }) {
