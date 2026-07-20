@@ -3,7 +3,7 @@ import { BtkiIntelligenceDashboard } from "@/components/btki-intelligence-dashbo
 import { PageShell } from "@/components/page-shell";
 
 export const metadata: Metadata = {
-  title: "AI Export Product Intelligence | bece.asia",
+  title: "AI Export Product Intelligence",
   description: "Temukan peluang ekspor, nilai pasar tujuan, bandingkan produk, dan buka referensi BTKI dalam satu workspace intelijen.",
 };
 
@@ -14,4 +14,3 @@ export default function BtkiIntelligencePage() {
     </PageShell>
   );
 }
-

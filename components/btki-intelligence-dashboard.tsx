@@ -74,7 +74,7 @@ export function BtkiIntelligenceDashboard({ locale }: { locale: Locale }) {
   }
 
   return (
-    <section className="min-h-screen bg-[#eef2f5] text-slate-950">
+    <section className="min-h-screen overflow-x-hidden bg-[#eef2f5] text-slate-950">
       <div className="border-b border-slate-700 bg-[#07172d] text-white">
         <div className="mx-auto max-w-[1440px] px-4 py-7 sm:px-6 lg:px-8">
           <div className="flex flex-wrap items-end justify-between gap-4">
