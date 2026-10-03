@@ -1,474 +1,701 @@
 "use client";
 
-import { ArrowRight, BarChart3, Brain, BriefcaseBusiness, Calculator, CheckCircle2, CircleDollarSign, Database, FileCheck2, Globe2, GraduationCap, Layers3, LineChart, LockKeyhole, Network, Search, ShieldCheck, ShoppingBag, Sparkles, Users, Workflow } from "lucide-react";
+import { useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { ArrowLeft, ArrowRight, Download, Save } from "lucide-react";
 import type { Locale } from "@/data/apps";
-import { databaseFoundation, exportOsCopy, exportOsFeatures, exportOsMetrics, getOpportunity, monetizationModel, opportunityRecommendations, phaseLabel } from "@/data/export-os";
 import { whatsappUrl } from "@/data/contact";
+import {
+  blankPlan,
+  calculatePlan,
+  examplePlan,
+  isExportPlan,
+  readinessScore,
+  readinessWeights,
+  type ExportPlan,
+  type ReadinessAnswer,
+} from "@/lib/export-plan";
 import { localePath } from "@/lib/routes";
 
-const readinessItems = [
-  { key: "legal", label: "NIB and company legality", segment: "Legal", points: 18 },
-  { key: "product", label: "Stable product quality and capacity", segment: "Product", points: 16 },
-  { key: "packaging", label: "Export-ready packaging and label", segment: "Product", points: 14 },
-  { key: "certification", label: "Relevant certification or test report", segment: "Compliance", points: 16 },
-  { key: "hs", label: "Known HS code and product classification", segment: "Knowledge", points: 12 },
-  { key: "payment", label: "Understands Incoterms and payment risk", segment: "Knowledge", points: 12 },
-  { key: "buyer", label: "Has target country or buyer profile", segment: "Market", points: 12 },
-];
-
-const phaseMeta = {
-  "phase-1": {
-    title: "Export discovery and readiness",
-    window: "0-3 months",
-    icon: Search,
-    goal: "Acquire users, diagnose companies, and turn traffic into structured exporter data.",
+const storageKey = "bece-export-plan-v1";
+const copyByLocale = {
+  id: {
+    title: "Mulai ekspor dengan rencana yang jelas.",
+    intro:
+      "Isi produk, nilai kesiapan, pilih pasar, lalu hitung biaya. Hasilnya menjadi tiga tindakan yang bisa Anda lanjutkan.",
+    steps: [
+      "Produk & pasar",
+      "Kesiapan usaha",
+      "Skenario biaya",
+      "Rencana tindakan",
+    ],
+    product: "Nama dan spesifikasi produk",
+    productHint: "Contoh: kopi arabika, kemasan 250 gram, kapasitas 500 unit.",
+    country: "Pasar untuk diteliti",
+    countryHint:
+      "Pilihan Anda adalah tujuan riset, bukan rekomendasi pasar otomatis.",
+    example: "Isi contoh",
+    resume: "Lanjutkan rencana tersimpan",
+    save: "Simpan di browser",
+    saved: "Rencana tersimpan di browser ini.",
+    unavailable:
+      "Penyimpanan tidak tersedia. Unduh hasil agar pekerjaan tetap tersimpan.",
+    missing: "Belum ada rencana tersimpan yang bisa dibuka.",
+    next: "Berikutnya",
+    back: "Sebelumnya",
+    restart: "Mulai ulang",
+    local:
+      "Data disimpan hanya setelah Anda menekan Simpan, di browser dan perangkat ini. Tidak tersinkron ke akun.",
+    yes: "Sudah",
+    no: "Belum",
+    unknown: "Belum tahu",
+    questions: [
+      "NIB dan legalitas usaha tersedia",
+      "Kualitas dan kapasitas produksi stabil",
+      "Kemasan dan label siap ekspor",
+      "Sertifikasi atau hasil uji yang relevan tersedia",
+      "Referensi HS produk sudah diketahui",
+      "Paham syarat penyerahan dan risiko pembayaran",
+      "Profil pasar atau calon buyer sudah diteliti",
+    ],
+    score: "Skor kesiapan mandiri",
+    scoreNote:
+      "Jawaban Sudah mendapat bobot yang ditampilkan; Belum dan Belum tahu bernilai nol. Ini penilaian mandiri, bukan sertifikasi.",
+    verify: "Verifikasi persyaratan produk dan pasar",
+    research: "Buka riset pasar",
+    hs: "Cari referensi HS",
+    amount: "Jumlah unit",
+    unitCost: "Biaya produksi per unit",
+    unitPrice: "Harga jual per unit",
+    freight: "Total biaya pengiriman",
+    documents: "Total biaya dokumen & biaya lain",
+    currency: "Mata uang",
+    date: "Tanggal asumsi",
+    assumptions:
+      "Estimasi berdasarkan input Anda. Seluruh nominal harus dalam mata uang yang sama. Pajak, asuransi, dan biaya tambahan hanya dihitung jika Anda memasukkannya pada biaya lain. Ini bukan kutipan ongkir atau penawaran buyer.",
+    total: "Total biaya",
+    revenue: "Pendapatan",
+    margin: "Margin estimasi",
+    perUnit: "Biaya per unit",
+    invalid:
+      "Lengkapi angka yang valid. Jumlah harus lebih dari nol; biaya dan harga tidak boleh negatif.",
+    result: "Estimasi · berdasarkan asumsi pengguna",
+    priorities: "Tiga tindakan prioritas",
+    maintain: "Periksa ulang bukti kesiapan dan konfirmasi kebutuhan buyer",
+    download: "Unduh rencana",
+    copied: "Hasil disalin.",
+    copy: "Salin hasil",
+    copyFail: "Penyalinan tidak tersedia. Gunakan Unduh rencana.",
+    consult: "Konsultasikan rencana",
+    include: "Sertakan ringkasan produk, skor, dan biaya ke pesan WhatsApp",
+    consultMessage: "Halo BECE Asia, saya ingin konsultasi rencana ekspor.",
+    output: "Rencana ekspor BECE Asia",
+    sources:
+      "Sumber: input pengguna dan bobot penilaian mandiri BECE Asia. Tidak ada data pasar real-time atau pemeriksaan resmi dalam hasil ini.",
+    loss: "Skenario ini menghasilkan margin negatif. Tinjau harga dan biaya sebelum menyiapkan penawaran.",
   },
-  "phase-2": {
-    title: "Export intelligence ecosystem",
-    window: "3-9 months",
-    icon: LineChart,
-    goal: "Build the data layer, supplier trust layer, buyer intelligence, and learning journey.",
+  en: {
+    title: "Start exporting with a clear plan.",
+    intro:
+      "Describe your product, assess readiness, choose a market, and estimate costs. Turn the result into three next actions.",
+    steps: [
+      "Product & market",
+      "Business readiness",
+      "Cost scenario",
+      "Action plan",
+    ],
+    product: "Product name and specifications",
+    productHint: "Example: arabica coffee, 250g packs, capacity of 500 units.",
+    country: "Market to research",
+    countryHint:
+      "Your choice is a research destination, not an automatic market recommendation.",
+    example: "Fill example",
+    resume: "Resume saved plan",
+    save: "Save in browser",
+    saved: "Plan saved in this browser.",
+    unavailable: "Storage unavailable. Download your result to keep your work.",
+    missing: "No valid saved plan is available.",
+    next: "Next",
+    back: "Previous",
+    restart: "Start over",
+    local:
+      "Data is saved only when you press Save, on this browser and device. It does not sync to an account.",
+    yes: "Ready",
+    no: "Not yet",
+    unknown: "Not sure",
+    questions: [
+      "Business registration and legal documents available",
+      "Stable product quality and production capacity",
+      "Export-ready packaging and labels",
+      "Relevant certifications or test reports available",
+      "Product HS reference identified",
+      "Delivery terms and payment risks understood",
+      "Target market or potential buyer profile researched",
+    ],
+    score: "Self-assessed readiness score",
+    scoreNote:
+      "Ready answers receive the displayed weight; Not yet and Not sure receive zero. This is self-assessment, not certification.",
+    verify: "Verify product and market requirements",
+    research: "Open market research",
+    hs: "Find HS references",
+    amount: "Number of units",
+    unitCost: "Production cost per unit",
+    unitPrice: "Selling price per unit",
+    freight: "Total shipping cost",
+    documents: "Total document & other costs",
+    currency: "Currency",
+    date: "Assumption date",
+    assumptions:
+      "Estimate based on your inputs. All amounts must use the same currency. Taxes, insurance, and extras are included only if you add them to other costs. This is not a freight quote or buyer offer.",
+    total: "Total cost",
+    revenue: "Revenue",
+    margin: "Estimated margin",
+    perUnit: "Cost per unit",
+    invalid:
+      "Complete valid numbers. Quantity must exceed zero; costs and prices cannot be negative.",
+    result: "Estimate · user assumptions",
+    priorities: "Three priority actions",
+    maintain: "Review readiness evidence and confirm buyer requirements",
+    download: "Download plan",
+    copied: "Result copied.",
+    copy: "Copy result",
+    copyFail: "Copy unavailable. Download the plan instead.",
+    consult: "Discuss this plan",
+    include: "Include product, score, and cost summary in WhatsApp message",
+    consultMessage: "Hello BECE Asia, I would like to discuss an export plan.",
+    output: "BECE Asia export plan",
+    sources:
+      "Source: user inputs and BECE Asia self-assessment weights. This result uses no real-time market data or official review.",
+    loss: "This scenario has a negative margin. Review prices and costs before preparing an offer.",
   },
-  "phase-3": {
-    title: "Marketplace and operating system",
-    window: "9-18 months",
-    icon: Workflow,
-    goal: "Operate buyer matching, CRM, compliance automation, and verified exporter workflows.",
+  zh: {
+    title: "以明确计划开始出口。",
+    intro:
+      "描述产品、评估准备度、选择市场并估算成本。将结果转化为三项后续行动。",
+    steps: ["产品与市场", "企业准备度", "成本情景", "行动计划"],
+    product: "产品名称与规格",
+    productHint: "例如：阿拉比卡咖啡，250 克包装，产能 500 件。",
+    country: "待研究市场",
+    countryHint: "此选择是研究目的地，并非自动市场推荐。",
+    example: "填写示例",
+    resume: "继续已保存计划",
+    save: "保存到浏览器",
+    saved: "计划已保存到此浏览器。",
+    unavailable: "存储不可用。请下载结果保存工作。",
+    missing: "没有可用的有效已保存计划。",
+    next: "下一步",
+    back: "上一步",
+    restart: "重新开始",
+    local: "仅在点击保存后，数据才会保存在此浏览器和设备。不会同步到账号。",
+    yes: "已准备",
+    no: "尚未",
+    unknown: "不确定",
+    questions: [
+      "已具备企业注册及法律文件",
+      "产品质量与产能稳定",
+      "出口包装与标签已准备",
+      "具备相关认证或检测报告",
+      "已确定产品 HS 参考",
+      "了解交付条款与付款风险",
+      "已研究目标市场或潜在买家",
+    ],
+    score: "自评准备度分数",
+    scoreNote: "已准备获得所示权重；尚未与不确定为零。这是自评，并非认证。",
+    verify: "验证产品与市场要求",
+    research: "打开市场研究",
+    hs: "查询 HS 参考",
+    amount: "件数",
+    unitCost: "每件生产成本",
+    unitPrice: "每件售价",
+    freight: "运输总成本",
+    documents: "文件与其他总成本",
+    currency: "币种",
+    date: "假设日期",
+    assumptions:
+      "基于您的输入估算。所有金额必须使用同一币种。税费、保险及其他费用仅在您将其计入其他成本时计算。这不是运费报价或买家报价。",
+    total: "总成本",
+    revenue: "收入",
+    margin: "估算利润",
+    perUnit: "每件成本",
+    invalid: "请填写有效数字。数量须大于零；成本与价格不可为负。",
+    result: "估算 · 用户假设",
+    priorities: "三项优先行动",
+    maintain: "复查准备度证据并确认买家要求",
+    download: "下载计划",
+    copied: "已复制结果。",
+    copy: "复制结果",
+    copyFail: "复制不可用，请下载计划。",
+    consult: "咨询此计划",
+    include: "将产品、分数和成本摘要加入 WhatsApp 消息",
+    consultMessage: "您好 BECE Asia，我想咨询出口计划。",
+    output: "BECE Asia 出口计划",
+    sources:
+      "来源：用户输入与 BECE Asia 自评权重。结果不包含实时市场数据或官方审核。",
+    loss: "此情景利润为负。请在报价前复查价格与成本。",
   },
 };
 
-const productOptions = opportunityRecommendations.map((item) => ({ value: item.product, label: item.label }));
-
 export function ExportOsPlatformClient({ locale }: { locale: Locale }) {
-  const copy = exportOsCopy[locale];
-  const [readiness, setReadiness] = useState<Record<string, boolean>>({
-    legal: true,
-    product: true,
-    packaging: false,
-    certification: false,
-    hs: true,
-    payment: false,
-    buyer: true,
-  });
-  const [product, setProduct] = useState(productOptions[0].value);
-  const [quantity, setQuantity] = useState(500);
-  const [unitCost, setUnitCost] = useState(80000);
-  const [sellingPrice, setSellingPrice] = useState(125000);
-  const [freight, setFreight] = useState(4500000);
-  const [documents, setDocuments] = useState(2500000);
-  const [advisorInput, setAdvisorInput] = useState("I have Indonesian coffee and want to export to Japan.");
-
-  const score = useMemo(
-    () => readinessItems.reduce((total, item) => total + (readiness[item.key] ? item.points : 0), 0),
-    [readiness],
-  );
-
-  const opportunity = getOpportunity(product);
-  const revenue = quantity * sellingPrice;
-  const totalCost = quantity * unitCost + freight + documents;
-  const margin = revenue - totalCost;
-  const marginRate = revenue > 0 ? Math.round((margin / revenue) * 100) : 0;
-  const fobUnit = Math.round((quantity * unitCost + documents) / Math.max(quantity, 1));
-  const cifUnit = Math.round(totalCost / Math.max(quantity, 1));
-
-  const missingItems = readinessItems.filter((item) => !readiness[item.key]);
-  const plan = buildAdvisorPlan(advisorInput);
-
+  const copy = copyByLocale[locale];
+  const [plan, setPlan] = useState<ExportPlan>(blankPlan);
+  const [step, setStep] = useState(0);
+  const [message, setMessage] = useState("");
+  const [include, setInclude] = useState(false);
+  const heading = useRef<HTMLHeadingElement>(null);
+  const score = readinessScore(plan.answers);
+  const result = calculatePlan(plan);
+  const pending = plan.answers
+    .map((answer, i) => (answer !== "yes" ? i : -1))
+    .filter((i) => i >= 0);
+  const actions = [
+    ...pending.map((i) => copy.questions[i]),
+    copy.maintain,
+    copy.verify,
+    copy.research,
+  ].slice(0, 3);
+  const money = (amount: number) =>
+    new Intl.NumberFormat(
+      locale === "id" ? "id-ID" : locale === "zh" ? "zh-CN" : "en-US",
+      { style: "currency", currency: plan.currency, maximumFractionDigits: 2 },
+    ).format(amount);
+  const update = (key: keyof ExportPlan, value: string) =>
+    setPlan((previous) => ({ ...previous, [key]: value }));
+  const go = (next: number) => {
+    setStep(next);
+    setMessage("");
+    requestAnimationFrame(() => {
+      heading.current?.focus();
+      heading.current?.scrollIntoView({ block: "start" });
+    });
+  };
+  const save = () => {
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(plan));
+      setMessage(copy.saved);
+    } catch {
+      setMessage(copy.unavailable);
+    }
+  };
+  const resume = () => {
+    try {
+      const saved: unknown = JSON.parse(
+        localStorage.getItem(storageKey) ?? "null",
+      );
+      if (isExportPlan(saved)) {
+        setPlan(saved);
+        go(0);
+      } else setMessage(copy.missing);
+    } catch {
+      setMessage(copy.unavailable);
+    }
+  };
+  const next = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (step === 2 && !result) {
+      setMessage(copy.invalid);
+      return;
+    }
+    go(step + 1);
+  };
+  const output = [
+    copy.output,
+    copy.result,
+    `${copy.product}: ${plan.product}`,
+    `${copy.country}: ${plan.country}`,
+    `${copy.date}: ${plan.assumptionDate}`,
+    `${copy.score}: ${score}/100`,
+    copy.scoreNote,
+    ...copy.questions.map(
+      (question, i) =>
+        `${question}: ${plan.answers[i] === "yes" ? copy.yes : plan.answers[i] === "no" ? copy.no : copy.unknown} (${readinessWeights[i]})`,
+    ),
+    ...(
+      ["quantity", "unitCost", "unitPrice", "freight", "documents"] as const
+    ).map(
+      (key, i) =>
+        `${[copy.amount, copy.unitCost, copy.unitPrice, copy.freight, copy.documents][i]}: ${plan[key]} ${key === "quantity" ? "" : plan.currency}`,
+    ),
+    ...(result
+      ? [
+          `${copy.total}: ${money(result.totalCost)}`,
+          `${copy.revenue}: ${money(result.revenue)}`,
+          `${copy.margin}: ${money(result.margin)}`,
+          `${copy.perUnit}: ${money(result.perUnit)}`,
+        ]
+      : []),
+    copy.assumptions,
+    copy.sources,
+    copy.priorities,
+    ...actions.map((action, i) => `${i + 1}. ${action}`),
+  ].join("\n");
+  const download = () => {
+    const url = URL.createObjectURL(
+      new Blob([output], { type: "text/plain;charset=utf-8" }),
+    );
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "bece-export-plan.txt";
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
   return (
     <div className="bg-soft">
-      <section className="border-b border-slate-200 bg-navy text-white">
-        <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:px-8 lg:py-20">
-          <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-teal">
-              <Sparkles size={16} />
-              {copy.eyebrow}
-            </div>
-            <h1 className="mt-7 max-w-5xl text-4xl font-black tracking-tight sm:text-5xl lg:text-6xl">{copy.title}</h1>
-            <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-300">{copy.subtitle}</p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <a href="#readiness" className="inline-flex items-center gap-2 rounded-full bg-teal px-5 py-3 text-sm font-bold text-white transition hover:bg-teal/90">
-                {copy.primaryCta}
-                <ArrowRight size={16} />
-              </a>
-              <a href="#architecture" className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-5 py-3 text-sm font-bold text-white transition hover:bg-white/15">
-                {copy.secondaryCta}
-              </a>
-            </div>
-          </div>
-
-          <div className="rounded-[2rem] border border-white/10 bg-white/10 p-5 shadow-soft">
-            <div className="grid gap-3 sm:grid-cols-2">
-              {exportOsMetrics.map((metric) => (
-                <div key={metric.label} className="rounded-3xl border border-white/10 bg-white/10 p-5">
-                  <p className="text-3xl font-black text-white">{metric.value}</p>
-                  <p className="mt-2 text-sm font-bold text-teal">{metric.label}</p>
-                  <p className="mt-1 text-xs leading-5 text-slate-300">{metric.detail}</p>
-                </div>
-              ))}
-            </div>
-            <div className="mt-4 rounded-3xl border border-white/10 bg-white/10 p-5">
-              <p className="text-sm font-bold uppercase tracking-[0.22em] text-gold">Product DNA</p>
-              <div className="mt-4 grid gap-3 text-sm text-slate-200">
-                {["Bloomberg-grade market intelligence", "Duolingo-style learning journey", "Shopify-like business enablement", "LinkedIn-like exporter-buyer network"].map((item) => (
-                  <div key={item} className="flex items-center gap-3">
-                    <CheckCircle2 className="h-5 w-5 text-teal" />
-                    <span>{item}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+      <section className="bg-navy text-white">
+        <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
+          <p className="text-sm font-bold text-emerald-300">BECE Export OS</p>
+          <h1 className="mt-3 text-3xl font-black sm:text-5xl">{copy.title}</h1>
+          <p className="mt-4 max-w-3xl leading-7 text-slate-300">
+            {copy.intro}
+          </p>
         </div>
       </section>
-
-      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid gap-5 lg:grid-cols-3">
-          {(Object.keys(phaseMeta) as Array<keyof typeof phaseMeta>).map((phase) => {
-            const meta = phaseMeta[phase];
-            const Icon = meta.icon;
-            return (
-              <div key={phase} className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="grid h-12 w-12 place-items-center rounded-2xl bg-teal/10 text-teal">
-                    <Icon size={24} />
-                  </div>
-                  <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">{meta.window}</span>
-                </div>
-                <p className="mt-5 text-sm font-bold uppercase tracking-[0.22em] text-teal">{phaseLabel(phase)}</p>
-                <h2 className="mt-2 text-2xl font-black tracking-tight text-navy">{meta.title}</h2>
-                <p className="mt-3 text-sm leading-6 text-slate-600">{meta.goal}</p>
-              </div>
-            );
-          })}
+      <section className="mx-auto max-w-5xl px-4 py-8 pb-24 sm:px-6">
+        <div className="flex flex-wrap gap-3">
+          <button
+            type="button"
+            onClick={() => {
+              setPlan(examplePlan);
+              go(0);
+            }}
+            className="min-h-12 rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-navy"
+          >
+            {copy.example}
+          </button>
+          <button
+            type="button"
+            onClick={resume}
+            className="min-h-12 rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-navy"
+          >
+            {copy.resume}
+          </button>
+          <button
+            type="button"
+            onClick={save}
+            className="inline-flex min-h-12 items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-navy"
+          >
+            <Save size={16} />
+            {copy.save}
+          </button>
         </div>
-      </section>
-
-      <section id="readiness" className="border-y border-slate-200 bg-white py-14">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionIntro eyebrow={copy.tools} title={copy.workspace} description="Phase 1 starts with practical tools that diagnose a business, reveal possible markets, estimate costs, and generate an action plan." />
-          <div className="mt-8 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-            <div className="rounded-[2rem] border border-slate-200 bg-soft p-6">
-              <div className="flex items-start justify-between gap-5">
-                <div>
-                  <p className="text-sm font-bold uppercase tracking-[0.22em] text-teal">{copy.readiness}</p>
-                  <h3 className="mt-2 text-3xl font-black tracking-tight text-navy">{score}/100</h3>
-                </div>
-                <div className="grid h-16 w-16 place-items-center rounded-3xl bg-navy text-white">
-                  <ShieldCheck size={30} />
-                </div>
+        <p className="mt-3 text-xs leading-6 text-slate-500">{copy.local}</p>
+        <ol
+          aria-label={
+            locale === "id"
+              ? "Kemajuan rencana"
+              : locale === "zh"
+                ? "计划进度"
+                : "Plan progress"
+          }
+          className="mt-6 grid grid-cols-2 gap-2 sm:grid-cols-4"
+        >
+          {copy.steps.map((label, i) => (
+            <li
+              key={label}
+              aria-current={step === i ? "step" : undefined}
+              className={`rounded-xl p-3 text-sm font-bold ${step === i ? "bg-navy text-white" : "bg-slate-200 text-slate-600"}`}
+            >
+              {i + 1}. {label}
+            </li>
+          ))}
+        </ol>
+        <div className="mt-5 rounded-3xl border border-slate-200 bg-white p-5 sm:p-8">
+          <h2
+            ref={heading}
+            tabIndex={-1}
+            className="scroll-mt-24 text-2xl font-bold text-navy"
+          >
+            {step + 1} / 4 · {copy.steps[step]}
+          </h2>
+          <p
+            role="status"
+            className="mt-3 text-sm font-semibold text-emerald-800"
+          >
+            {message}
+          </p>
+          <form onSubmit={next}>
+            {step === 0 && (
+              <div className="mt-6 grid gap-5">
+                <label className="font-semibold text-navy">
+                  {copy.product}
+                  <textarea
+                    required
+                    maxLength={500}
+                    value={plan.product}
+                    onChange={(e) => update("product", e.target.value)}
+                    placeholder={copy.productHint}
+                    className="mt-2 min-h-28 w-full rounded-xl border border-slate-300 p-3 text-sm"
+                  />
+                </label>
+                <label className="font-semibold text-navy">
+                  {copy.country}
+                  <input
+                    required
+                    maxLength={120}
+                    value={plan.country}
+                    onChange={(e) => update("country", e.target.value)}
+                    className="mt-2 min-h-12 w-full rounded-xl border border-slate-300 px-3 text-sm"
+                  />
+                  <span className="mt-2 block text-xs font-normal leading-6 text-slate-500">
+                    {copy.countryHint}
+                  </span>
+                </label>
+                <Link
+                  href={localePath(locale, "/market-intelligence")}
+                  className="font-bold text-teal"
+                >
+                  {copy.research} →
+                </Link>
               </div>
-              <div className="mt-5 h-3 overflow-hidden rounded-full bg-slate-200">
-                <div className="h-full rounded-full bg-gradient-to-r from-teal to-gold" style={{ width: `${score}%` }} />
-              </div>
-              <p className="mt-4 text-sm leading-6 text-slate-600">{score >= 75 ? "Strong export potential. Focus on buyer validation and compliance depth." : score >= 55 ? "Promising, but the business needs focused improvements before serious buyer outreach." : "Early stage. Start with legality, product consistency, packaging, and export basics."}</p>
-              <div className="mt-5 grid gap-3">
-                {readinessItems.map((item) => (
-                  <label key={item.key} className="flex cursor-pointer items-start gap-3 rounded-2xl border border-slate-200 bg-white p-3">
-                    <input
-                      type="checkbox"
-                      checked={readiness[item.key]}
-                      onChange={(event) => setReadiness((current) => ({ ...current, [item.key]: event.target.checked }))}
-                      className="mt-1 h-4 w-4 accent-teal"
-                    />
-                    <span>
-                      <span className="block text-sm font-bold text-navy">{item.label}</span>
-                      <span className="text-xs font-semibold text-slate-500">{item.segment} +{item.points}</span>
+            )}
+            {step === 1 && (
+              <div className="mt-6 space-y-4">
+                <p className="text-2xl font-black text-navy">
+                  {copy.score}: {score}/100
+                </p>
+                <p className="text-xs leading-6 text-slate-600">
+                  {copy.scoreNote}
+                </p>
+                {copy.questions.map((question, i) => (
+                  <label
+                    key={question}
+                    className="block rounded-xl bg-slate-50 p-4 text-sm font-semibold text-navy"
+                  >
+                    {question}{" "}
+                    <span className="text-xs text-slate-500">
+                      (+{readinessWeights[i]})
                     </span>
+                    <select
+                      value={plan.answers[i]}
+                      onChange={(e) =>
+                        setPlan((previous) => ({
+                          ...previous,
+                          answers: previous.answers.map((answer, j) =>
+                            i === j
+                              ? (e.target.value as ReadinessAnswer)
+                              : answer,
+                          ),
+                        }))
+                      }
+                      className="mt-3 min-h-12 w-full rounded-xl border border-slate-300 bg-white px-3"
+                    >
+                      <option value="unknown">{copy.unknown}</option>
+                      <option value="yes">{copy.yes}</option>
+                      <option value="no">{copy.no}</option>
+                    </select>
                   </label>
                 ))}
-              </div>
-            </div>
-
-            <div className="grid gap-6">
-              <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
-                <p className="text-sm font-bold uppercase tracking-[0.22em] text-teal">Priority action plan</p>
-                <div className="mt-4 grid gap-3">
-                  {(missingItems.length ? missingItems : readinessItems.slice(0, 3)).slice(0, 4).map((item, index) => (
-                    <div key={item.key} className="flex items-start gap-3 rounded-2xl bg-slate-50 p-4">
-                      <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-navy text-xs font-black text-white">{index + 1}</span>
-                      <div>
-                        <p className="text-sm font-bold text-navy">{missingItems.length ? item.label : `Maintain ${item.segment.toLowerCase()} readiness`}</p>
-                        <p className="mt-1 text-xs leading-5 text-slate-500">Turn this into a mission in the learning path and attach evidence to the company workspace.</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="rounded-[2rem] border border-slate-200 bg-navy p-6 text-white shadow-sm">
-                <p className="text-sm font-bold uppercase tracking-[0.22em] text-teal">{copy.advisor}</p>
-                <textarea
-                  value={advisorInput}
-                  onChange={(event) => setAdvisorInput(event.target.value)}
-                  className="mt-4 min-h-24 w-full rounded-2xl border border-white/10 bg-white/10 p-4 text-sm leading-6 text-white outline-none placeholder:text-slate-400"
-                  placeholder="Example: I have coconut sugar and want to export to UAE."
-                />
-                <div className="mt-4 grid gap-3 md:grid-cols-3">
-                  {plan.map((item) => (
-                    <div key={item.title} className="rounded-2xl bg-white/10 p-4">
-                      <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">{item.title}</p>
-                      <p className="mt-2 text-sm leading-6 text-slate-200">{item.body}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-        <div className="grid gap-6 lg:grid-cols-[1fr_0.9fr]">
-          <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="flex items-start justify-between gap-5">
-              <div>
-                <p className="text-sm font-bold uppercase tracking-[0.22em] text-teal">{copy.opportunity}</p>
-                <h2 className="mt-2 text-3xl font-black tracking-tight text-navy">Product to market matching</h2>
-              </div>
-              <Globe2 className="h-10 w-10 text-teal" />
-            </div>
-            <select value={product} onChange={(event) => setProduct(event.target.value)} className="mt-5 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-navy outline-none">
-              {productOptions.map((option) => (
-                <option key={option.value} value={option.value}>{option.label}</option>
-              ))}
-            </select>
-            <div className="mt-5 grid gap-4">
-              {opportunity.countries.map((country) => (
-                <div key={country.country} className="rounded-3xl border border-slate-200 bg-slate-50 p-5">
-                  <div className="flex flex-wrap items-center justify-between gap-3">
-                    <h3 className="text-xl font-black text-navy">{country.country}</h3>
-                    <span className="rounded-full bg-teal/10 px-3 py-1 text-xs font-black text-teal">Fit score {country.score}</span>
-                  </div>
-                  <p className="mt-3 text-sm leading-6 text-slate-600">{country.demand}</p>
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {country.requirements.map((requirement) => (
-                      <span key={requirement} className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-600">{requirement}</span>
-                    ))}
-                  </div>
-                  <p className="mt-4 text-sm font-bold text-navy">Buyer: <span className="font-semibold text-slate-600">{country.buyer}</span></p>
-                  <p className="mt-2 text-sm font-bold text-navy">Strategy: <span className="font-semibold text-slate-600">{country.strategy}</span></p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="flex items-start justify-between gap-5">
-              <div>
-                <p className="text-sm font-bold uppercase tracking-[0.22em] text-teal">{copy.calculator}</p>
-                <h2 className="mt-2 text-3xl font-black tracking-tight text-navy">FOB/CIF margin simulator</h2>
-              </div>
-              <Calculator className="h-10 w-10 text-teal" />
-            </div>
-            <div className="mt-5 grid gap-3">
-              <NumberField label="Quantity" value={quantity} setValue={setQuantity} suffix="kg" />
-              <NumberField label="Production cost / kg" value={unitCost} setValue={setUnitCost} prefix="Rp" />
-              <NumberField label="Target selling price / kg" value={sellingPrice} setValue={setSellingPrice} prefix="Rp" />
-              <NumberField label="Freight estimate" value={freight} setValue={setFreight} prefix="Rp" />
-              <NumberField label="Documents and certification" value={documents} setValue={setDocuments} prefix="Rp" />
-            </div>
-            <div className="mt-6 grid gap-3 sm:grid-cols-2">
-              <ResultTile label="FOB unit" value={`Rp${formatNumber(fobUnit)}`} />
-              <ResultTile label="CIF unit" value={`Rp${formatNumber(cifUnit)}`} />
-              <ResultTile label="Estimated margin" value={`Rp${formatNumber(margin)}`} tone={margin >= 0 ? "good" : "bad"} />
-              <ResultTile label="Margin rate" value={`${marginRate}%`} tone={marginRate >= 15 ? "good" : "bad"} />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="border-y border-slate-200 bg-white py-14">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionIntro eyebrow={copy.roadmap} title="Feature roadmap and technical brief" description="Each module is designed as part of one operating system: diagnosis, intelligence, network, transactions, and daily export operations." />
-          <div className="mt-8 grid gap-5">
-            {exportOsFeatures.map((feature) => (
-              <FeatureBrief key={feature.name} feature={feature} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="architecture" className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-        <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
-          <div className="rounded-[2rem] border border-slate-200 bg-navy p-6 text-white shadow-sm">
-            <p className="text-sm font-bold uppercase tracking-[0.22em] text-teal">{copy.architecture}</p>
-            <h2 className="mt-3 text-3xl font-black tracking-tight">Modern SaaS platform architecture</h2>
-            <div className="mt-6 grid gap-4">
-              {[
-                ["Frontend", "Next.js App Router, Tailwind, server components, interactive client islands."],
-                ["Data", "Postgres for core records, search index for buyers/exporters, object storage for documents."],
-                ["AI", "LLM gateway with RAG over market intelligence, regulations, and company context."],
-                ["Billing", "Subscription plans, report purchases, AI credits, lead credits, verification fees."],
-                ["Trust", "Verification workflow, audit logs, source confidence, role-based access."],
-              ].map(([title, body]) => (
-                <div key={title} className="flex gap-3 rounded-2xl bg-white/10 p-4">
-                  <Layers3 className="mt-1 h-5 w-5 shrink-0 text-gold" />
-                  <div>
-                    <p className="font-bold">{title}</p>
-                    <p className="mt-1 text-sm leading-6 text-slate-300">{body}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="grid gap-6">
-            <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
-              <p className="text-sm font-bold uppercase tracking-[0.22em] text-teal">{copy.database}</p>
-              <div className="mt-5 grid gap-3 md:grid-cols-2">
-                {databaseFoundation.map(([table, purpose]) => (
-                  <div key={table} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                    <p className="font-mono text-sm font-black text-navy">{table}</p>
-                    <p className="mt-2 text-xs leading-5 text-slate-600">{purpose}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
-              <p className="text-sm font-bold uppercase tracking-[0.22em] text-teal">{copy.monetization}</p>
-              <div className="mt-5 grid gap-3">
-                {monetizationModel.map(([planName, body]) => (
-                  <div key={planName} className="flex gap-3 rounded-2xl bg-slate-50 p-4">
-                    <CircleDollarSign className="mt-1 h-5 w-5 shrink-0 text-teal" />
-                    <div>
-                      <p className="font-bold text-navy">{planName}</p>
-                      <p className="mt-1 text-sm leading-6 text-slate-600">{body}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="border-t border-slate-200 bg-white py-14">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="rounded-[2rem] bg-gradient-to-br from-navy to-navy-light p-7 text-white shadow-soft">
-            <p className="text-sm font-bold uppercase tracking-[0.22em] text-teal">{copy.nextBuild}</p>
-            <div className="mt-4 grid gap-6 lg:grid-cols-[1fr_0.65fr] lg:items-end">
-              <div>
-                <h2 className="text-3xl font-black tracking-tight sm:text-4xl">Build the intelligence layer first, then activate the marketplace.</h2>
-                <p className="mt-4 max-w-3xl text-base leading-7 text-slate-300">The moat is company readiness data, product-country intelligence, buyer signals, and workflow history. Marketplace liquidity becomes easier once BECE owns this data layer.</p>
-              </div>
-              <div className="flex flex-wrap gap-3 lg:justify-end">
-                <Link href={localePath(locale, "/export-os/intelligence")} className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-bold text-navy transition hover:bg-slate-100">
-                  {locale === "id" ? "Buka Phase 2 Workspace" : locale === "zh" ? "打开第二阶段工作台" : "Open Phase 2 Workspace"}
-                  <ArrowRight size={16} />
+                <Link
+                  href={localePath(locale, "/apps/btki-smart-search")}
+                  className="inline-block py-3 font-bold text-teal"
+                >
+                  {copy.hs} →
                 </Link>
-                <a href={whatsappUrl("Hello bece.asia, I want to discuss the BECE Export OS SaaS roadmap and implementation.")} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-5 py-3 text-sm font-bold text-white transition hover:bg-white/15">
-                  Consult BECE
+              </div>
+            )}
+            {step === 2 && (
+              <div className="mt-6">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <label className="text-sm font-semibold text-navy">
+                    {copy.currency}
+                    <select
+                      value={plan.currency}
+                      onChange={(e) => update("currency", e.target.value)}
+                      className="mt-2 min-h-12 w-full rounded-xl border border-slate-300 bg-white px-3"
+                    >
+                      <option>IDR</option>
+                      <option>USD</option>
+                    </select>
+                  </label>
+                  <label className="text-sm font-semibold text-navy">
+                    {copy.date}
+                    <input
+                      required
+                      type="date"
+                      value={plan.assumptionDate}
+                      onChange={(e) => update("assumptionDate", e.target.value)}
+                      className="mt-2 min-h-12 w-full min-w-0 rounded-xl border border-slate-300 px-3"
+                    />
+                  </label>
+                  {(
+                    [
+                      "quantity",
+                      "unitCost",
+                      "unitPrice",
+                      "freight",
+                      "documents",
+                    ] as const
+                  ).map((key, i) => (
+                    <label
+                      key={key}
+                      className="text-sm font-semibold text-navy"
+                    >
+                      {
+                        [
+                          copy.amount,
+                          copy.unitCost,
+                          copy.unitPrice,
+                          copy.freight,
+                          copy.documents,
+                        ][i]
+                      }
+                      {key === "quantity" ? "" : ` (${plan.currency})`}
+                      <input
+                        required
+                        type="number"
+                        inputMode="decimal"
+                        min={key === "quantity" ? "0.000001" : "0"}
+                        step="any"
+                        value={plan[key]}
+                        onChange={(e) => update(key, e.target.value)}
+                        className="mt-2 min-h-12 w-full rounded-xl border border-slate-300 px-3"
+                      />
+                    </label>
+                  ))}
+                </div>
+                <p className="mt-5 rounded-xl bg-amber-50 p-4 text-xs leading-6 text-amber-950">
+                  {copy.assumptions}
+                </p>
+              </div>
+            )}
+            {step === 3 && result && (
+              <div className="mt-6">
+                <p className="text-sm font-bold text-amber-800">
+                  {copy.result} · {plan.assumptionDate}
+                </p>
+                <p className="mt-2 break-words text-lg font-bold text-navy">
+                  {plan.product} · {plan.country}
+                </p>
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                  {[
+                    { label: copy.score, value: `${score}/100` },
+                    { label: copy.total, value: money(result.totalCost) },
+                    { label: copy.revenue, value: money(result.revenue) },
+                    { label: copy.margin, value: money(result.margin) },
+                    { label: copy.perUnit, value: money(result.perUnit) },
+                  ].map((item) => (
+                    <div
+                      key={item.label}
+                      className="rounded-xl bg-slate-50 p-4"
+                    >
+                      <p className="text-xs text-slate-600">{item.label}</p>
+                      <p className="mt-1 break-words text-xl font-black text-navy">
+                        {item.value}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+                {result.margin < 0 && (
+                  <p className="mt-4 text-sm font-bold text-amber-800">
+                    {copy.loss}
+                  </p>
+                )}
+                <p className="mt-4 text-xs leading-6 text-slate-600">
+                  {copy.assumptions}
+                </p>
+                <p className="mt-2 text-xs leading-6 text-slate-600">
+                  {copy.sources}
+                </p>
+                <h3 className="mt-6 text-lg font-bold text-navy">
+                  {copy.priorities}
+                </h3>
+                <ol className="mt-3 space-y-3">
+                  {actions.map((action, i) => (
+                    <li
+                      key={action}
+                      className="rounded-xl border border-slate-200 p-4 text-sm font-semibold text-navy"
+                    >
+                      {i + 1}. {action}
+                    </li>
+                  ))}
+                </ol>
+                <div className="mt-5 flex flex-wrap gap-3">
+                  <button
+                    type="button"
+                    onClick={download}
+                    className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-navy px-4 font-bold text-white"
+                  >
+                    <Download size={18} />
+                    {copy.download}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      try {
+                        await navigator.clipboard.writeText(output);
+                        setMessage(copy.copied);
+                      } catch {
+                        setMessage(copy.copyFail);
+                      }
+                    }}
+                    className="min-h-12 rounded-xl border border-slate-200 px-4 font-bold text-navy"
+                  >
+                    {copy.copy}
+                  </button>
+                  <Link
+                    href={localePath(locale, "/export-os/intelligence")}
+                    className="inline-flex min-h-12 items-center rounded-xl border border-slate-200 px-4 font-bold text-navy"
+                  >
+                    {copy.research}
+                  </Link>
+                </div>
+                <label className="mt-6 flex min-h-12 items-center gap-3 text-sm text-slate-600">
+                  <input
+                    type="checkbox"
+                    checked={include}
+                    onChange={(e) => setInclude(e.target.checked)}
+                    className="h-5 w-5 shrink-0"
+                  />
+                  {copy.include}
+                </label>
+                <a
+                  href={whatsappUrl(
+                    include
+                      ? `${copy.consultMessage}\n${output}`
+                      : copy.consultMessage,
+                  )}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-3 inline-flex min-h-12 items-center rounded-xl bg-emerald-700 px-4 font-bold text-white"
+                >
+                  {copy.consult}
                 </a>
               </div>
+            )}
+            <div className="mt-8 flex flex-wrap gap-3 border-t border-slate-200 pt-5">
+              {step > 0 && (
+                <button
+                  type="button"
+                  onClick={() => go(step - 1)}
+                  className="inline-flex min-h-12 items-center gap-2 rounded-xl border border-slate-200 px-4 font-bold text-navy"
+                >
+                  <ArrowLeft size={16} />
+                  {copy.back}
+                </button>
+              )}
+              {step < 3 ? (
+                <button
+                  type="submit"
+                  className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-navy px-5 font-bold text-white"
+                >
+                  {copy.next}
+                  <ArrowRight size={16} />
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPlan(blankPlan);
+                    go(0);
+                  }}
+                  className="min-h-12 rounded-xl border border-slate-200 px-4 font-bold text-navy"
+                >
+                  {copy.restart}
+                </button>
+              )}
             </div>
-          </div>
+          </form>
         </div>
       </section>
     </div>
   );
-}
-
-function SectionIntro({ eyebrow, title, description }: { eyebrow: string; title: string; description: string }) {
-  return (
-    <div className="max-w-4xl">
-      <p className="text-sm font-bold uppercase tracking-[0.24em] text-teal">{eyebrow}</p>
-      <h2 className="mt-3 text-3xl font-black tracking-tight text-navy sm:text-4xl">{title}</h2>
-      <p className="mt-4 text-base leading-7 text-slate-600">{description}</p>
-    </div>
-  );
-}
-
-function FeatureBrief({ feature }: { feature: (typeof exportOsFeatures)[number] }) {
-  const icons = [BriefcaseBusiness, Database, BarChart3, Brain, LockKeyhole, ShoppingBag, Users, GraduationCap, Network, Workflow, FileCheck2, ShieldCheck];
-  const Icon = icons[Math.abs(feature.name.length) % icons.length];
-
-  return (
-    <article className="rounded-[2rem] border border-slate-200 bg-soft p-5">
-      <div className="grid gap-5 lg:grid-cols-[0.8fr_1.2fr]">
-        <div className="rounded-3xl bg-white p-5">
-          <div className="flex items-start justify-between gap-4">
-            <div className="grid h-12 w-12 place-items-center rounded-2xl bg-teal/10 text-teal">
-              <Icon size={24} />
-            </div>
-            <span className="rounded-full bg-navy px-3 py-1 text-xs font-bold text-white">{phaseLabel(feature.phase)}</span>
-          </div>
-          <h3 className="mt-5 text-2xl font-black tracking-tight text-navy">{feature.name}</h3>
-          <p className="mt-3 text-sm leading-6 text-slate-600">{feature.tagline}</p>
-          <div className="mt-5">
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">User flow</p>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {feature.userFlow.map((step) => (
-                <span key={step} className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">{step}</span>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="grid gap-3 md:grid-cols-2">
-          <BriefBox title="Database structure" body={feature.database.join(", ")} />
-          <BriefBox title="UI/UX concept" body={feature.uiUx} />
-          <BriefBox title="Technical architecture" body={feature.architecture} />
-          <BriefBox title="API requirement" body={feature.api.join(" | ")} mono />
-          <BriefBox title="Monetization" body={feature.monetization} />
-          <BriefBox title="Scalability" body={feature.scalability} />
-        </div>
-      </div>
-    </article>
-  );
-}
-
-function BriefBox({ title, body, mono = false }: { title: string; body: string; mono?: boolean }) {
-  return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-4">
-      <p className="text-xs font-bold uppercase tracking-[0.18em] text-teal">{title}</p>
-      <p className={`mt-3 text-sm leading-6 text-slate-600 ${mono ? "font-mono text-xs" : ""}`}>{body}</p>
-    </div>
-  );
-}
-
-function NumberField({ label, value, setValue, prefix, suffix }: { label: string; value: number; setValue: (value: number) => void; prefix?: string; suffix?: string }) {
-  return (
-    <label className="block">
-      <span className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">{label}</span>
-      <div className="mt-2 flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2">
-        {prefix ? <span className="text-sm font-bold text-slate-500">{prefix}</span> : null}
-        <input
-          type="number"
-          min="0"
-          value={value}
-          onChange={(event) => setValue(Number(event.target.value))}
-          className="w-full bg-transparent py-1 text-sm font-bold text-navy outline-none"
-        />
-        {suffix ? <span className="text-sm font-bold text-slate-500">{suffix}</span> : null}
-      </div>
-    </label>
-  );
-}
-
-function ResultTile({ label, value, tone = "neutral" }: { label: string; value: string; tone?: "neutral" | "good" | "bad" }) {
-  const toneClass = tone === "good" ? "text-teal" : tone === "bad" ? "text-red-600" : "text-navy";
-  return (
-    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-      <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">{label}</p>
-      <p className={`mt-2 text-xl font-black ${toneClass}`}>{value}</p>
-    </div>
-  );
-}
-
-function buildAdvisorPlan(input: string) {
-  const lower = input.toLowerCase();
-  const product = lower.includes("coffee") ? "specialty coffee" : lower.includes("coconut") ? "coconut product" : lower.includes("spice") ? "spice product" : "export product";
-  const market = lower.includes("japan") ? "Japan" : lower.includes("uae") || lower.includes("dubai") ? "UAE" : lower.includes("hong") ? "Hong Kong" : "target market";
-
-  return [
-    { title: "Diagnosis", body: `Your ${product} can be positioned for ${market}, but buyer proof and compliance evidence must be prepared.` },
-    { title: "30 days", body: "Confirm HS code, product specification, shelf life, packaging, and basic export documents." },
-    { title: "60-90 days", body: "Prepare sample shipment, shortlist buyers, track outreach in CRM, and validate landed cost." },
-  ];
-}
-
-function formatNumber(value: number) {
-  return new Intl.NumberFormat("id-ID", { maximumFractionDigits: 0 }).format(value);
 }

@@ -1,101 +1,193 @@
 "use client";
 
-import { Search } from "lucide-react";
+import { Grid2X2, List, Search } from "lucide-react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import type { AppItem, Locale } from "@/data/apps";
 import { localized } from "@/data/apps";
 import { categories } from "@/data/categories";
-import { t } from "@/data/i18n-safe";
-import { AppGrid } from "./app-grid";
+import { appMatchesSearch, resourceResults } from "@/lib/search";
+import { localePath } from "@/lib/routes";
+import { AppCard } from "./app-card";
 
-export function AppsClient({ apps, locale }: { apps: AppItem[]; locale: Locale }) {
-  const dict = t(locale);
+export function AppsClient({
+  apps,
+  locale,
+}: {
+  apps: AppItem[];
+  locale: Locale;
+}) {
+  const params = useSearchParams();
+  const [query, setQuery] = useState(params.get("q") ?? "");
+  const [category, setCategory] = useState(params.get("category") ?? "all");
+  const [view, setView] = useState<"grid" | "list">("grid");
   const copy = {
-    viewApps: locale === "en" ? "View apps" : locale === "zh" ? "\u67e5\u770b\u5e94\u7528" : "Lihat aplikasi",
-    backToCategories: locale === "en" ? "Back to categories" : locale === "zh" ? "\u8fd4\u56de\u5206\u7c7b" : "Kembali ke kategori"
-  };
-  const [query, setQuery] = useState("");
-  const [category, setCategory] = useState(() => {
-    if (typeof window === "undefined") return "all";
-    const selectedCategory = new URLSearchParams(window.location.search).get("category");
-    if (selectedCategory && categories.some((item) => item.key === selectedCategory)) {
-      return selectedCategory;
-    }
-    return "all";
-  });
-
-  const filteredApps = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    return apps.filter((app) => {
-      const matchesCategory = category === "all" || app.category === category;
-      const haystack = [localized(app.name, locale), localized(app.tagline, locale), localized(app.description, locale), app.category, app.scope, app.region, ...app.tags].join(" ").toLowerCase();
-      return matchesCategory && (!q || haystack.includes(q));
-    });
-  }, [apps, category, locale, query]);
-
-  const categoryCounts = useMemo(() => {
-    return categories.map((item) => ({
-      ...item,
-      count: apps.filter((app) => app.category === item.key).length
-    })).filter((item) => item.count > 0);
-  }, [apps]);
-
-  const chooseCategory = (nextCategory: string) => {
-    setCategory(nextCategory);
+    id: {
+      search: "Cari alat, produk, negara, atau panduan",
+      all: "Semua kategori",
+      count: "alat ditemukan",
+      resources: "Produk, pasar, dan panduan terkait",
+      empty: "Belum ada hasil. Coba kopi, kakao, HS, atau Hong Kong.",
+      reset: "Hapus pencarian dan filter",
+      grid: "Tampilan kartu",
+      list: "Tampilan daftar",
+      filter: "Filter kategori",
+    },
+    en: {
+      search: "Search tools, products, countries, or guides",
+      all: "All categories",
+      count: "tools found",
+      resources: "Related products, markets, and guides",
+      empty: "No results yet. Try coffee, cocoa, HS, or Hong Kong.",
+      reset: "Clear search and filters",
+      grid: "Card view",
+      list: "List view",
+      filter: "Category filter",
+    },
+    zh: {
+      search: "搜索工具、产品、国家或指南",
+      all: "所有分类",
+      count: "个工具",
+      resources: "相关产品、市场与指南",
+      empty: "未找到结果。请尝试咖啡、可可、HS 或香港。",
+      reset: "清除搜索与筛选",
+      grid: "卡片视图",
+      list: "列表视图",
+      filter: "分类筛选",
+    },
+  }[locale];
+  const filtered = useMemo(
+    () =>
+      apps.filter(
+        (app) =>
+          (category === "all" || app.category === category) &&
+          appMatchesSearch(app, query),
+      ),
+    [apps, query, category],
+  );
+  const resources = resourceResults(query, locale);
+  const update = (q: string, cat: string) => {
+    setQuery(q);
+    setCategory(cat);
     const url = new URL(window.location.href);
-    if (nextCategory === "all") {
-      url.searchParams.delete("category");
-    } else {
-      url.searchParams.set("category", nextCategory);
-    }
+    if (q) url.searchParams.set("q", q);
+    else url.searchParams.delete("q");
+    if (cat !== "all") url.searchParams.set("category", cat);
+    else url.searchParams.delete("category");
     window.history.replaceState(null, "", url);
   };
-
+  const availableCategories = [...new Set(apps.map((app) => app.category))];
   return (
-    <div className="space-y-8">
-      <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
-        <div className="flex flex-col gap-4 lg:flex-row">
-          <label className="relative flex-1">
-            <Search className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-            <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={dict.apps.search} className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 pl-11 pr-4 text-sm outline-none transition focus:border-teal focus:bg-white focus:ring-4 focus:ring-teal/10" />
-          </label>
-          <select value={category} onChange={(event) => chooseCategory(event.target.value)} className="h-12 rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm font-medium text-slate-700 outline-none transition focus:border-teal focus:bg-white focus:ring-4 focus:ring-teal/10">
-            <option value="all">{dict.apps.allCategories}</option>
-            {categories.map((item) => (
-              <option key={item.key} value={item.key}>{localized(item.label, locale)}</option>
+    <div className="space-y-6">
+      <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 sm:flex-row">
+        <label className="relative min-w-0 flex-1">
+          <span className="sr-only">{copy.search}</span>
+          <Search size={18} className="absolute left-3 top-4 text-slate-400" />
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => update(e.target.value, category)}
+            placeholder={copy.search}
+            className="min-h-12 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-3 text-sm"
+          />
+        </label>
+        <label>
+          <span className="sr-only">{copy.filter}</span>
+          <select
+            value={category}
+            onChange={(e) => update(query, e.target.value)}
+            className="min-h-12 w-full max-w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm sm:max-w-60"
+          >
+            <option value="all">{copy.all}</option>
+            {availableCategories.map((key) => (
+              <option key={key} value={key}>
+                {localized(
+                  categories.find((item) => item.key === key)?.label ?? {
+                    id: key,
+                    en: key,
+                  },
+                  locale,
+                )}
+              </option>
             ))}
           </select>
+        </label>
+      </div>
+      {resources.length > 0 && (
+        <section className="rounded-2xl border border-teal/25 bg-teal/5 p-4">
+          <h2 className="font-bold text-navy">{copy.resources}</h2>
+          <div className="mt-3 grid gap-3 md:grid-cols-2">
+            {resources.map((item) => (
+              <Link
+                key={item.path}
+                href={localePath(
+                  locale,
+                  `${item.path}?q=${encodeURIComponent(query)}`,
+                )}
+                className="rounded-xl bg-white p-4 hover:ring-1 hover:ring-teal"
+              >
+                <h3 className="font-bold text-navy">{item.title} →</h3>
+                <p className="mt-1 text-sm leading-6 text-slate-600">
+                  {item.description}
+                </p>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+      <div className="flex items-center justify-between gap-3">
+        <p role="status" className="text-sm text-slate-600">
+          {filtered.length} {copy.count}
+        </p>
+        <div className="flex gap-2">
+          <button
+            aria-label={copy.grid}
+            aria-pressed={view === "grid"}
+            onClick={() => setView("grid")}
+            className={`grid h-11 w-11 place-items-center rounded-xl border ${view === "grid" ? "bg-navy text-white" : "bg-white text-navy"}`}
+          >
+            <Grid2X2 size={18} />
+          </button>
+          <button
+            aria-label={copy.list}
+            aria-pressed={view === "list"}
+            onClick={() => setView("list")}
+            className={`grid h-11 w-11 place-items-center rounded-xl border ${view === "list" ? "bg-navy text-white" : "bg-white text-navy"}`}
+          >
+            <List size={18} />
+          </button>
         </div>
       </div>
-
-      {category === "all" && !query.trim() ? (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {categoryCounts.map((item) => (
-            <button key={item.key} onClick={() => chooseCategory(item.key)} className="group rounded-3xl border border-slate-200 bg-white p-5 text-left shadow-sm transition hover:-translate-y-1 hover:border-teal/40 hover:shadow-soft">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-teal">{dict.apps.category}</p>
-                  <h2 className="mt-2 text-2xl font-black text-navy">{localized(item.label, locale)}</h2>
-                </div>
-                <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">{item.count}</span>
-              </div>
-              <p className="mt-4 text-sm leading-6 text-slate-600">{localized(item.description, locale)}</p>
-              <span className="mt-5 inline-flex rounded-full bg-navy px-4 py-2 text-sm font-bold text-white transition group-hover:bg-navy-light">
-                {copy.viewApps}
-              </span>
-            </button>
+      {filtered.length ? (
+        <div
+          className={
+            view === "grid"
+              ? "grid gap-5 md:grid-cols-2 lg:grid-cols-3"
+              : "grid gap-4"
+          }
+        >
+          {filtered.map((app) => (
+            <AppCard
+              key={app.slug}
+              app={app}
+              locale={locale}
+              compact={view === "list"}
+              query={query}
+            />
           ))}
         </div>
-      ) : filteredApps.length > 0 ? (
-        <div className="space-y-5">
-          {category !== "all" ? (
-            <button onClick={() => chooseCategory("all")} className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-navy transition hover:border-teal">
-              {copy.backToCategories}
-            </button>
-          ) : null}
-          <AppGrid apps={filteredApps} locale={locale} />
+      ) : (
+        <div className="rounded-2xl border border-dashed border-slate-300 p-8 text-center">
+          <p className="text-slate-600">{copy.empty}</p>
+          <button
+            onClick={() => update("", "all")}
+            className="mt-4 min-h-12 rounded-xl bg-navy px-4 text-sm font-bold text-white"
+          >
+            {copy.reset}
+          </button>
         </div>
-      ) : <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center text-slate-500">{dict.apps.noResult}</div>}
+      )}
     </div>
   );
 }

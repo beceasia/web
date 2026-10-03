@@ -3,8 +3,9 @@ import { ExportOsPlatformClient } from "@/components/export-os-platform-client";
 import { PageShell } from "@/components/page-shell";
 
 export const metadata: Metadata = {
-  title: "BECE Export Operating System",
-  description: "A modern SaaS workspace for Indonesian businesses to discover export opportunities, assess readiness, understand regulations, connect with buyers, and manage export activity.",
+  title: "Rencana Ekspor: Kesiapan dan Simulasi Biaya",
+  description:
+    "Isi produk, nilai kesiapan usaha, simulasikan biaya, dan unduh tiga tindakan prioritas ekspor beserta asumsi Anda.",
   alternates: {
     canonical: "/export-os",
     languages: {

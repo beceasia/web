@@ -19,6 +19,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 6rem;
 }
 
 body {
@@ -26,6 +27,40 @@ body {
   background: #f7fafc;
   color: #0f172a;
   font-family: Inter, "Plus Jakarta Sans", Arial, Helvetica, sans-serif;
+}
+
+:focus-visible {
+  outline: 3px solid #00857c;
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media print {
+  header,
+  footer,
+  body > aside {
+    display: none !important;
+  }
+  article {
+    background: white !important;
+  }
+  a {
+    color: inherit;
+  }
+  section {
+    break-inside: avoid;
+  }
 }
 
 a {

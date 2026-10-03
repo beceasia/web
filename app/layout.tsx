@@ -10,7 +10,8 @@ export const metadata: Metadata = {
     default: "bece.asia",
     template: "%s | bece.asia",
   },
-  description: "Public digital tools for productivity, learning, research, documents, and everyday workflows.",
+  description:
+    "Public digital tools for productivity, learning, research, documents, and everyday workflows.",
   authors: [{ name: "bece.asia" }],
   creator: "bece.asia",
   publisher: "bece.asia",
@@ -19,7 +20,12 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
-    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
   alternates: { canonical: "/" },
   openGraph: {
@@ -27,19 +33,23 @@ export const metadata: Metadata = {
     url: "https://www.bece.asia",
     siteName: "bece.asia",
     title: "bece.asia",
-    description: "Public digital tools for productivity, learning, research, documents, and everyday workflows.",
+    description:
+      "Public digital tools for productivity, learning, research, documents, and everyday workflows.",
   },
   twitter: {
     card: "summary",
     title: "bece.asia",
-    description: "Public digital tools for productivity, learning, research, documents, and everyday workflows.",
+    description:
+      "Public digital tools for productivity, learning, research, documents, and everyday workflows.",
   },
   icons: { icon: "/favicon.svg" },
 };
 
-export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
+export default function RootLayout({
+  children,
+}: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="id" data-scroll-behavior="smooth">
       <body>
         {children}
         <FloatingContactWidget />

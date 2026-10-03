@@ -1,12 +1,43 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
+import {
+  saveBrowserValue,
+  storedValue,
+  subscribeBrowserStorage,
+} from "@/lib/browser-storage";
 import { apps, localized, type Locale } from "@/data/apps";
 import { localePath } from "@/lib/routes";
 
-const monthId = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-const monthEn = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const monthId = [
+  "Januari",
+  "Februari",
+  "Maret",
+  "April",
+  "Mei",
+  "Juni",
+  "Juli",
+  "Agustus",
+  "September",
+  "Oktober",
+  "November",
+  "Desember",
+];
+const monthEn = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 
 export function UtilitiesClient({ locale }: { locale: Locale }) {
   const [numberSeq, setNumberSeq] = useState("001");
@@ -14,10 +45,14 @@ export function UtilitiesClient({ locale }: { locale: Locale }) {
   const [year, setYear] = useState("2026");
   const [date, setDate] = useState("2026-07-04");
   const [score, setScore] = useState("4.87");
-  const [notes, setNotes] = useState(() => {
-    if (typeof window === "undefined") return "";
-    return localStorage.getItem("bece-notes") ?? "";
-  });
+  const storedNotes = useSyncExternalStore(
+    subscribeBrowserStorage,
+    () => storedValue("bece-notes"),
+    () => "",
+  );
+  const [noteDraft, setNotes] = useState<string | null>(null);
+  const notes = noteDraft ?? storedNotes;
+  const [noteMessage, setNoteMessage] = useState("");
 
   const formattedNumber = `${numberSeq}/${code}/${year}`;
   const formattedDate = useMemo(() => {
@@ -33,49 +68,54 @@ export function UtilitiesClient({ locale }: { locale: Locale }) {
     return ((value / 5) * 4).toFixed(2);
   }, [score]);
 
-  const copy = locale === "en" ? {
-    number: "Document number helper",
-    date: "Date formatter",
-    checklist: "Procurement checklist",
-    scale: "Scale converter",
-    notes: "Local notes",
-    launcher: "App launcher",
-    save: "Save note",
-    saved: "Saved in this browser",
-    seq: "Sequence",
-    code: "Code",
-    year: "Year",
-    score: "Score on 5 scale",
-    result: "Result on 4 scale"
-  } : locale === "zh" ? {
-    number: "\u6587\u6863\u7f16\u53f7\u52a9\u624b",
-    date: "\u65e5\u671f\u683c\u5f0f\u5316",
-    checklist: "\u91c7\u8d2d\u68c0\u67e5\u6e05\u5355",
-    scale: "\u5206\u503c\u8f6c\u6362\u5668",
-    notes: "\u672c\u5730\u7b14\u8bb0",
-    launcher: "\u5e94\u7528\u542f\u52a8\u5668",
-    save: "\u4fdd\u5b58\u7b14\u8bb0",
-    saved: "\u5df2\u4fdd\u5b58\u5728\u6b64\u6d4f\u89c8\u5668",
-    seq: "\u5e8f\u53f7",
-    code: "\u4ee3\u7801",
-    year: "\u5e74\u4efd",
-    score: "5 \u5206\u5236\u5206\u6570",
-    result: "4 \u5206\u5236\u7ed3\u679c"
-  } : {
-    number: "Bantuan nomor dokumen",
-    date: "Format tanggal",
-    checklist: "Checklist pengadaan",
-    scale: "Konverter skala",
-    notes: "Catatan lokal",
-    launcher: "Launcher aplikasi",
-    save: "Simpan catatan",
-    saved: "Tersimpan di browser ini",
-    seq: "Urutan",
-    code: "Kode",
-    year: "Tahun",
-    score: "Nilai skala 5",
-    result: "Hasil skala 4"
-  };
+  const copy =
+    locale === "en"
+      ? {
+          number: "Document number helper",
+          date: "Date formatter",
+          checklist: "Procurement checklist",
+          scale: "Scale converter",
+          notes: "Local notes",
+          launcher: "App launcher",
+          save: "Save note",
+          saved: "Saved in this browser",
+          seq: "Sequence",
+          code: "Code",
+          year: "Year",
+          score: "Score on 5 scale",
+          result: "Result on 4 scale",
+        }
+      : locale === "zh"
+        ? {
+            number: "\u6587\u6863\u7f16\u53f7\u52a9\u624b",
+            date: "\u65e5\u671f\u683c\u5f0f\u5316",
+            checklist: "\u91c7\u8d2d\u68c0\u67e5\u6e05\u5355",
+            scale: "\u5206\u503c\u8f6c\u6362\u5668",
+            notes: "\u672c\u5730\u7b14\u8bb0",
+            launcher: "\u5e94\u7528\u542f\u52a8\u5668",
+            save: "\u4fdd\u5b58\u7b14\u8bb0",
+            saved: "\u5df2\u4fdd\u5b58\u5728\u6b64\u6d4f\u89c8\u5668",
+            seq: "\u5e8f\u53f7",
+            code: "\u4ee3\u7801",
+            year: "\u5e74\u4efd",
+            score: "5 \u5206\u5236\u5206\u6570",
+            result: "4 \u5206\u5236\u7ed3\u679c",
+          }
+        : {
+            number: "Bantuan nomor dokumen",
+            date: "Format tanggal",
+            checklist: "Checklist pengadaan",
+            scale: "Konverter skala",
+            notes: "Catatan lokal",
+            launcher: "Launcher aplikasi",
+            save: "Simpan catatan",
+            saved: "Tersimpan di browser ini",
+            seq: "Urutan",
+            code: "Kode",
+            year: "Tahun",
+            score: "Nilai skala 5",
+            result: "Hasil skala 4",
+          };
 
   return (
     <div className="grid gap-5 lg:grid-cols-2">
@@ -89,7 +129,12 @@ export function UtilitiesClient({ locale }: { locale: Locale }) {
       </UtilityCard>
 
       <UtilityCard title={copy.date}>
-        <input type="date" value={date} onChange={(event) => setDate(event.target.value)} className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm outline-none focus:border-teal focus:ring-4 focus:ring-teal/10" />
+        <input
+          type="date"
+          value={date}
+          onChange={(event) => setDate(event.target.value)}
+          className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm outline-none focus:border-teal focus:ring-4 focus:ring-teal/10"
+        />
         <Result value={formattedDate} />
       </UtilityCard>
 
@@ -100,8 +145,18 @@ export function UtilitiesClient({ locale }: { locale: Locale }) {
 
       <UtilityCard title={copy.checklist}>
         <div className="space-y-3">
-          {["Terms of reference", "Budget availability", "Vendor document", "Evaluation notes", "Contract draft", "Handover record"].map((item) => (
-            <label key={item} className="flex items-center gap-3 rounded-2xl bg-slate-50 p-3 text-sm font-medium text-slate-700">
+          {[
+            "Terms of reference",
+            "Budget availability",
+            "Vendor document",
+            "Evaluation notes",
+            "Contract draft",
+            "Handover record",
+          ].map((item) => (
+            <label
+              key={item}
+              className="flex items-center gap-3 rounded-2xl bg-slate-50 p-3 text-sm font-medium text-slate-700"
+            >
               <input type="checkbox" className="h-4 w-4 accent-teal" />
               {locale === "id" ? translateChecklist(item) : item}
             </label>
@@ -110,15 +165,73 @@ export function UtilitiesClient({ locale }: { locale: Locale }) {
       </UtilityCard>
 
       <UtilityCard title={copy.notes}>
-        <textarea value={notes} onChange={(event) => setNotes(event.target.value)} rows={6} className="w-full rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm outline-none focus:border-teal focus:ring-4 focus:ring-teal/10" />
-        <button onClick={() => localStorage.setItem("bece-notes", notes)} className="mt-3 rounded-full bg-navy px-5 py-3 text-sm font-bold text-white hover:bg-navy-light">{copy.save}</button>
-        <p className="mt-2 text-xs text-slate-500">{copy.saved}</p>
+        <textarea
+          aria-label={copy.notes}
+          value={notes}
+          onChange={(event) => setNotes(event.target.value)}
+          rows={6}
+          className="w-full rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm outline-none focus:border-teal focus:ring-4 focus:ring-teal/10"
+        />
+        <div className="mt-3 flex flex-wrap gap-3">
+          <button
+            onClick={() => {
+              try {
+                saveBrowserValue("bece-notes", notes);
+                setNoteMessage(copy.saved);
+              } catch {
+                setNoteMessage(
+                  locale === "id"
+                    ? "Catatan belum tersimpan. Unduh salinan terlebih dahulu."
+                    : locale === "zh"
+                      ? "笔记尚未保存，请先下载副本。"
+                      : "Notes were not saved. Download a copy first.",
+                );
+              }
+            }}
+            className="min-h-12 rounded-full bg-navy px-5 py-3 text-sm font-bold text-white hover:bg-navy-light"
+          >
+            {copy.save}
+          </button>
+          <button
+            onClick={() => {
+              const url = URL.createObjectURL(
+                new Blob([notes], { type: "text/plain;charset=utf-8" }),
+              );
+              const link = document.createElement("a");
+              link.href = url;
+              link.download = "bece-notes.txt";
+              link.click();
+              setTimeout(() => URL.revokeObjectURL(url), 1000);
+            }}
+            className="min-h-12 rounded-full border border-slate-200 px-5 py-3 text-sm font-bold text-navy"
+          >
+            {locale === "id"
+              ? "Unduh catatan"
+              : locale === "zh"
+                ? "下载笔记"
+                : "Download notes"}
+          </button>
+        </div>
+        <p role="status" className="mt-2 text-xs text-emerald-800">
+          {noteMessage}
+        </p>
+        <p className="mt-2 text-xs leading-6 text-slate-500">
+          {locale === "id"
+            ? "Catatan disimpan di browser dan perangkat ini setelah Anda menekan Simpan. Tidak tersinkron ke akun; unduh untuk membuat salinan."
+            : locale === "zh"
+              ? "点击保存后，笔记保存在此浏览器和设备，不会同步到账号。下载以备份。"
+              : "Notes stay in this browser and device after you press Save. They do not sync to an account; download a backup."}
+        </p>
       </UtilityCard>
 
       <UtilityCard title={copy.launcher}>
         <div className="grid gap-3">
           {apps.slice(0, 6).map((app) => (
-            <a key={app.slug} href={localePath(locale, `/apps/${app.slug}`)} className="rounded-2xl bg-slate-50 p-3 text-sm font-semibold text-navy transition hover:bg-teal/10">
+            <a
+              key={app.slug}
+              href={localePath(locale, `/apps/${app.slug}`)}
+              className="rounded-2xl bg-slate-50 p-3 text-sm font-semibold text-navy transition hover:bg-teal/10"
+            >
               {localized(app.name, locale)}
             </a>
           ))}
@@ -128,7 +241,13 @@ export function UtilitiesClient({ locale }: { locale: Locale }) {
   );
 }
 
-function UtilityCard({ title, children }: { title: string; children: ReactNode }) {
+function UtilityCard({
+  title,
+  children,
+}: {
+  title: string;
+  children: ReactNode;
+}) {
   return (
     <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
       <h2 className="text-xl font-bold text-navy">{title}</h2>
@@ -137,17 +256,33 @@ function UtilityCard({ title, children }: { title: string; children: ReactNode }
   );
 }
 
-function Input({ label, value, onChange }: { label: string; value: string; onChange: (value: string) => void }) {
+function Input({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+}) {
   return (
     <label className="block text-sm font-medium text-slate-600">
       {label}
-      <input value={value} onChange={(event) => onChange(event.target.value)} className="mt-2 h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm outline-none focus:border-teal focus:ring-4 focus:ring-teal/10" />
+      <input
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        className="mt-2 h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm outline-none focus:border-teal focus:ring-4 focus:ring-teal/10"
+      />
     </label>
   );
 }
 
 function Result({ value }: { value: string }) {
-  return <div className="mt-4 rounded-2xl bg-navy px-4 py-3 font-bold text-white">{value}</div>;
+  return (
+    <div className="mt-4 rounded-2xl bg-navy px-4 py-3 font-bold text-white">
+      {value}
+    </div>
+  );
 }
 
 function translateChecklist(item: string) {
@@ -157,7 +292,7 @@ function translateChecklist(item: string) {
     "Vendor document": "Dokumen penyedia",
     "Evaluation notes": "Catatan evaluasi",
     "Contract draft": "Draft kontrak",
-    "Handover record": "Berita acara serah terima"
+    "Handover record": "Berita acara serah terima",
   };
   return map[item] ?? item;
 }

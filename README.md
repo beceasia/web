@@ -11,8 +11,13 @@ Public digital tools for trade, documents, learning, research, and everyday work
 
 ## Language
 
-- English default at `/`
-- Bahasa Indonesia at `/id`
+- Bahasa Indonesia at `/` (legacy alias `/id`)
+- English at `/en`
+- Mandarin at `/zh`
+
+The app catalog opens tools directly and searches products, HS references, markets, and related guides. Export OS at `/export-os` provides a four-step product, readiness, cost, and action-plan workflow. Saved plans and notes stay in the user's browser; they are not account-synced. Market intelligence examples are labelled as demo data.
+
+Run workflow regression checks with `node scripts/test-export-plan.mjs` and `node scripts/test-search.mjs`.
 
 ## Local development
 

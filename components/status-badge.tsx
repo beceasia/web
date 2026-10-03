@@ -6,9 +6,27 @@ const statusClass: Record<AppStatus, string> = {
   beta: "bg-sky-50 text-sky-700 ring-sky-200",
   maintenance: "bg-amber-50 text-amber-700 ring-amber-200",
   experimental: "bg-violet-50 text-violet-700 ring-violet-200",
-  archived: "bg-slate-100 text-slate-600 ring-slate-200"
+  archived: "bg-slate-100 text-slate-600 ring-slate-200",
 };
 
-export function StatusBadge({ status, locale }: { status: AppStatus; locale: Locale }) {
-  return <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ring-1 ${statusClass[status]}`}>{t(locale).status[status]}</span>;
+export function StatusBadge({
+  status,
+  locale,
+}: {
+  status: AppStatus;
+  locale: Locale;
+}) {
+  const label =
+    status === "active"
+      ? { id: "Siap digunakan", en: "Ready to use", zh: "可使用" }[locale]
+      : status === "experimental"
+        ? { id: "Demo", en: "Demo", zh: "演示" }[locale]
+        : t(locale).status[status];
+  return (
+    <span
+      className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ring-1 ${statusClass[status]}`}
+    >
+      {label}
+    </span>
+  );
 }

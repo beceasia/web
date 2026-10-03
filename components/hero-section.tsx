@@ -1,47 +1,127 @@
-import { ArrowRight, Sparkles } from "lucide-react";
-import Image from "next/image";
+import { ArrowRight, CheckCircle2, Globe2, Wrench } from "lucide-react";
 import Link from "next/link";
 import type { Locale } from "@/data/apps";
-import { t } from "@/data/i18n-safe";
 import { localePath } from "@/lib/routes";
+import { HomeSearch } from "./home-search";
 
 export function HeroSection({ locale }: { locale: Locale }) {
-  const dict = t(locale);
-  const hubDescription = locale === "en"
-    ? "Sanitized tools, public launchers, and lightweight apps in one place."
-    : locale === "zh"
-      ? "\u7ecf\u8fc7\u6e05\u7406\u7684\u5de5\u5177\u3001\u516c\u5171\u542f\u52a8\u5668\u548c\u8f7b\u91cf\u5e94\u7528\u96c6\u4e2d\u5728\u4e00\u5904\u3002"
-      : "Tools yang disanitasi, launcher publik, dan aplikasi ringan dalam satu tempat.";
-
+  const copy = {
+    id: {
+      title: "Temukan peluang ekspor. Selesaikan pekerjaan bisnis Anda.",
+      subtitle:
+        "Riset pasar, telusuri referensi HS, hitung biaya, dan siapkan dokumen dalam satu tempat.",
+      eyebrow: "Dari pertanyaan ke langkah berikutnya",
+      paths: [
+        "Saya ingin mulai ekspor",
+        "Saya ingin mencari pasar dan buyer",
+        "Saya ingin menggunakan alat kerja",
+      ],
+      result: "Seperti apa hasilnya?",
+      example: "Contoh rencana ekspor",
+      product: "Produk: kopi Indonesia",
+      steps: [
+        "Kenali kesiapan usaha",
+        "Pilih pasar untuk diteliti",
+        "Hitung biaya dan margin",
+        "Unduh tiga tindakan prioritas",
+      ],
+      note: "Isi data Anda atau coba contoh. Estimasi biaya mengikuti asumsi Anda.",
+    },
+    en: {
+      title: "Find export opportunities. Get your business work done.",
+      subtitle:
+        "Research markets, explore HS references, estimate costs, and prepare documents in one place.",
+      eyebrow: "From questions to next steps",
+      paths: [
+        "I want to start exporting",
+        "I want to find markets and buyers",
+        "I want to use business tools",
+      ],
+      result: "What can you create?",
+      example: "Example export plan",
+      product: "Product: Indonesian coffee",
+      steps: [
+        "Assess business readiness",
+        "Choose a market to research",
+        "Estimate costs and margin",
+        "Download three priority actions",
+      ],
+      note: "Use your own inputs or try an example. Cost estimates follow your assumptions.",
+    },
+    zh: {
+      title: "发现出口机会，完成业务工作。",
+      subtitle: "在一个平台研究市场、查询 HS 参考、估算成本并准备文件。",
+      eyebrow: "从问题到下一步行动",
+      paths: ["我想开始出口", "我想寻找市场与买家", "我想使用业务工具"],
+      result: "您能获得什么结果？",
+      example: "出口计划示例",
+      product: "产品：印尼咖啡",
+      steps: [
+        "评估企业准备度",
+        "选择待研究的市场",
+        "估算成本与利润",
+        "下载三项优先行动",
+      ],
+      note: "填写您的数据或尝试示例。成本估算基于您的假设。",
+    },
+  }[locale];
+  const paths = ["/export-os", "/export-os/intelligence", "/apps"];
+  const icons = [CheckCircle2, Globe2, Wrench];
   return (
-    <section className="relative overflow-hidden bg-[linear-gradient(180deg,#ffffff,#f7fafc)]">
-      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-20 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:px-8 lg:py-28">
-        <div className="relative z-10">
-          <div className="inline-flex items-center gap-2 rounded-full border border-teal/20 bg-white px-4 py-2 text-sm font-semibold text-teal shadow-sm">
-            <Sparkles size={16} />
-            {dict.hero.eyebrow}
-          </div>
-          <h1 className="mt-7 max-w-4xl text-4xl font-black tracking-tight text-navy sm:text-5xl lg:text-6xl">{dict.hero.title}</h1>
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600">{dict.hero.subtitle}</p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link href={localePath(locale, "/apps")} className="inline-flex items-center gap-2 rounded-full bg-navy px-6 py-3 text-sm font-bold text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-navy-light">
-              {dict.hero.primary}
-              <ArrowRight size={18} />
-            </Link>
-            <Link href={localePath(locale, "/utilities")} className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-bold text-navy shadow-sm transition hover:-translate-y-0.5 hover:border-teal">
-              {dict.hero.secondary}
-            </Link>
+    <section className="bg-[linear-gradient(180deg,#ffffff,#f7fafc)]">
+      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[1.25fr_0.75fr] lg:px-8 lg:py-16">
+        <div>
+          <p className="text-sm font-bold text-teal">{copy.eyebrow}</p>
+          <h1 className="mt-4 max-w-3xl text-3xl font-black tracking-tight text-navy sm:text-5xl lg:text-6xl">
+            {copy.title}
+          </h1>
+          <p className="mt-4 max-w-2xl leading-7 text-slate-600">
+            {copy.subtitle}
+          </p>
+          <HomeSearch locale={locale} />
+          <div className="mt-4 grid gap-2">
+            {copy.paths.map((title, index) => {
+              const Icon = icons[index];
+              return (
+                <Link
+                  key={title}
+                  href={localePath(locale, paths[index])}
+                  className="flex min-h-12 items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-navy hover:border-teal"
+                >
+                  <Icon size={20} className="shrink-0 text-teal" />
+                  {title}
+                  <ArrowRight size={16} className="ml-auto shrink-0" />
+                </Link>
+              );
+            })}
           </div>
         </div>
-        <div className="relative z-10 overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-soft">
-          <Image src="/brand/bece-master.png" alt="bece.asia brand visual" width={1400} height={1400} priority className="aspect-[4/3] h-full w-full object-cover" />
-          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-white via-white/88 to-transparent p-6">
-            <p className="text-sm uppercase tracking-[0.24em] text-teal">bece.asia</p>
-            <h2 className="mt-2 text-3xl font-black text-navy">Utility Hub</h2>
-            <p className="mt-2 max-w-md text-sm leading-6 text-slate-600">
-              {hubDescription}
-            </p>
-          </div>
+        <div className="self-center rounded-3xl bg-navy p-6 text-white shadow-soft">
+          <p className="text-xs font-bold uppercase tracking-widest text-emerald-300">
+            {copy.result}
+          </p>
+          <h2 className="mt-3 text-2xl font-bold">{copy.example}</h2>
+          <p className="mt-2 text-sm text-slate-300">{copy.product}</p>
+          <ol className="mt-6 space-y-4">
+            {copy.steps.map((step, i) => (
+              <li key={step} className="flex items-center gap-3 text-sm">
+                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-white/10 text-emerald-300">
+                  {i + 1}
+                </span>
+                {step}
+              </li>
+            ))}
+          </ol>
+          <p className="mt-6 border-t border-white/15 pt-4 text-xs leading-6 text-slate-300">
+            {copy.note}
+          </p>
+          <Link
+            href={localePath(locale, "/export-os")}
+            className="mt-4 inline-flex min-h-12 items-center gap-2 rounded-xl bg-white px-4 font-bold text-navy"
+          >
+            {copy.paths[0]}
+            <ArrowRight size={18} />
+          </Link>
         </div>
       </div>
     </section>

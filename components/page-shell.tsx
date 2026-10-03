@@ -3,12 +3,20 @@ import type { Locale } from "@/data/apps";
 import { Footer } from "./footer";
 import { Navbar } from "./navbar";
 
-export function PageShell({ locale, currentPath, children }: { locale: Locale; currentPath: string; children: ReactNode }) {
+export function PageShell({
+  locale,
+  currentPath,
+  children,
+}: {
+  locale: Locale;
+  currentPath: string;
+  children: ReactNode;
+}) {
   return (
-    <>
+    <div lang={locale}>
       <Navbar locale={locale} currentPath={currentPath} />
       <main>{children}</main>
       <Footer locale={locale} />
-    </>
+    </div>
   );
 }
