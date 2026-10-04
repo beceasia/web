@@ -1,6 +1,6 @@
-import { ArrowUpRight, MessageCircle, Sparkles } from "lucide-react";
+import { ArrowUpRight, Mail, MessageCircle, Sparkles } from "lucide-react";
 import type { Locale } from "@/data/apps";
-import { INSTAGRAM_URL, WHATSAPP_DISPLAY, whatsappUrl } from "@/data/contact";
+import { CONTACT_EMAIL, INSTAGRAM_URL, WHATSAPP_DISPLAY, whatsappUrl } from "@/data/contact";
 
 const instagramItems = [
   {
@@ -118,6 +118,13 @@ export function SocialContactSection({ locale }: { locale: Locale }) {
             >
               <Sparkles size={18} />
               {copy.instagram}
+            </a>
+            <a
+              href={`mailto:${CONTACT_EMAIL}`}
+              className="inline-flex min-h-12 items-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-navy transition hover:border-teal/40 hover:text-teal"
+            >
+              <Mail size={18} aria-hidden="true" />
+              {CONTACT_EMAIL}
             </a>
           </div>
         </div>

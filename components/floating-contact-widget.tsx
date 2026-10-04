@@ -1,9 +1,9 @@
 "use client";
 
-import { MessageCircle, X } from "lucide-react";
+import { Mail, MessageCircle, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { whatsappUrl } from "@/data/contact";
+import { CONTACT_EMAIL, whatsappUrl } from "@/data/contact";
 
 export function FloatingContactWidget() {
   const pathname = usePathname();
@@ -96,6 +96,13 @@ export function FloatingContactWidget() {
             className="mt-2 flex min-h-12 items-center justify-center rounded-xl border border-slate-200 text-sm font-bold text-navy"
           >
             {copy.app}
+          </a>
+          <a
+            href={`mailto:${CONTACT_EMAIL}`}
+            className="mt-2 flex min-h-12 items-center justify-center gap-2 rounded-xl border border-slate-200 text-sm font-bold text-navy hover:bg-slate-50"
+          >
+            <Mail size={18} aria-hidden="true" />
+            {CONTACT_EMAIL}
           </a>
         </div>
       )}

@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { Mail } from "lucide-react";
 import type { Locale } from "@/data/apps";
+import { CONTACT_EMAIL } from "@/data/contact";
 import { t } from "@/data/i18n-safe";
 import { localePath } from "@/lib/routes";
 import { Logo } from "./logo";
@@ -17,6 +19,10 @@ export function Footer({ locale }: { locale: Locale }) {
         <div className="space-y-4">
           <Logo locale={locale} />
           <p className="max-w-3xl text-sm leading-6 text-slate-600">{dict.footer.disclaimer}</p>
+          <a href={`mailto:${CONTACT_EMAIL}`} className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-navy hover:text-teal">
+            <Mail size={18} aria-hidden="true" />
+            {CONTACT_EMAIL}
+          </a>
           <p className="text-xs font-semibold text-slate-500">© 2026 bece.asia</p>
         </div>
         <div className="grid grid-cols-2 gap-3 text-sm">
