@@ -215,6 +215,22 @@ export const apps: AppItem[] = [
     officialStatus: "community-built"
   },
   {
+    slug: "freight-analyzer",
+    name: { en: "Freight Analyzer", id: "Freight Analyzer", zh: "货运报价分析器" },
+    tagline: { en: "Parse freight quotations, compare scope, and calculate export pricing.", id: "Baca quotation freight, bandingkan scope, dan hitung harga ekspor.", zh: "解析货运报价、比较服务范围并计算出口定价。" },
+    description: { en: "A browser-based export logistics workspace for parsing freight quotations, selecting the correct weight break, comparing forwarder scope, and building product export price estimates.", id: "Workspace logistik ekspor berbasis browser untuk membaca quotation freight, memilih weight break yang tepat, membandingkan scope forwarder, dan menyusun estimasi harga ekspor produk.", zh: "基于浏览器的出口物流工作区，可解析货运报价、选择正确的重量阶梯、比较货代服务范围并生成产品出口价格估算。" },
+    category: "Trade Tools",
+    status: "beta",
+    region: "Global",
+    scope: "Freight Quotation Analysis",
+    url: "/apps/freight-analyzer",
+    featured: false,
+    tags: ["freight", "quotation", "logistics", "forwarder", "landed cost", "incoterms"],
+    utilities: { en: ["Quotation parser", "Weight-break calculator", "Forwarder comparison", "Export pricing"], id: ["Parser quotation", "Kalkulator weight break", "Perbandingan forwarder", "Harga ekspor"], zh: ["报价解析", "重量阶梯计算", "货代比较", "出口定价"] },
+    lastUpdated: "2026-10-07",
+    officialStatus: "community-built"
+  },
+  {
     slug: "ews-dashboard",
     name: { en: "News Scraper Dashboard", id: "News Scraper Dashboard" },
     tagline: { en: "Scrape public news by query, RSS, or URLs and classify sentiment signals.", id: "Scrape berita publik dari query, RSS, atau URL dan klasifikasikan sinyal sentimen." },

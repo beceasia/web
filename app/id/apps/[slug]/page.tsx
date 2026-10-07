@@ -3,7 +3,7 @@ import { PageShell } from "@/components/page-shell";
 import { apps } from "@/data/apps";
 
 export function generateStaticParams() {
-  return apps.map((app) => ({ slug: app.slug }));
+  return apps.filter((app) => app.slug !== "freight-analyzer").map((app) => ({ slug: app.slug }));
 }
 
 export default async function IndonesianAppDetailPage({ params }: { params: Promise<{ slug: string }> }) {
