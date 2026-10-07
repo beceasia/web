@@ -107,7 +107,7 @@ export function appAction(app: AppItem, locale: Locale) {
       "查询产品与 HS",
     ],
     "kalkulator-sawit": ["Hitung biaya", "Calculate costs", "计算费用"],
-    "freight-analyzer": ["Analisis quotation", "Analyze quotation", "分析报价"],
+    "freight-analyzer": ["Cari tarif freight", "Find freight rates", "查询货运价格"],
     "export-clinic-workbench": [
       "Mulai penilaian",
       "Assess readiness",

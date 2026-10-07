@@ -1,374 +1,188 @@
 export type FreightLocale = "id" | "en" | "zh";
-export type ChargeStatus = "included" | "excluded" | "unclear";
+export type FreightMode = "express" | "air" | "sea-lcl" | "sea-fcl20" | "sea-fcl40";
+export type DestinationRegion = "asean" | "east-asia" | "japan" | "middle-east" | "europe" | "north-america" | "australia";
+export type CargoType = "general" | "food" | "perishable" | "electronics" | "dangerous" | "textile";
+export type ServiceScope = "terminal-terminal" | "door-terminal" | "terminal-door" | "door-door";
 
-export type RateBreak = {
-  threshold: number;
-  rate: number;
-  currency: "IDR" | "USD";
-};
-
-export type ScopeKey =
-  | "awb"
-  | "handling"
-  | "exportCustoms"
-  | "xray"
-  | "pickup"
-  | "destinationHandling"
-  | "destinationCustoms"
-  | "delivery";
-
-export type FreightScope = Record<ScopeKey, ChargeStatus>;
-
-export type FreightQuote = {
-  id: string;
-  label: string;
-  rawText: string;
-  origin: string;
-  destination: string;
-  originCode: string;
-  destinationCode: string;
-  mode: "Air" | "Sea" | "Land" | "Unknown";
-  commodity: string;
-  carrier: string;
-  transitTime: string;
-  validity: string;
-  incoterm: string;
-  vatPercent: number;
-  incomingRate: number;
-  rateBreaks: RateBreak[];
-  scope: FreightScope;
-  notes: string[];
-  createdAt: string;
-};
-
-export type PackageDimensions = {
+export type FreightEstimateInput = {
+  mode: FreightMode;
+  region: DestinationRegion;
+  cargoType: CargoType;
+  serviceScope: ServiceScope;
+  weightKg: number;
   pieces: number;
   lengthCm: number;
   widthCm: number;
   heightCm: number;
+  cargoValueUsd: number;
+  exchangeRate: number;
 };
 
-export type FreightCalculation = {
-  actualWeight: number;
+export type EstimateBreakdown = {
+  baseFreight: number;
+  fuelAndSecurity: number;
+  originHandling: number;
+  exportDocuments: number;
+  pickup: number;
+  destinationService: number;
+  cargoAdjustment: number;
+  insurance: number;
+  totalUsd: number;
+  totalIdr: number;
+};
+
+export type FreightEstimate = {
+  volumeCbm: number;
   volumetricWeight: number;
   chargeableWeight: number;
-  billedWeight: number;
-  selectedBreak: RateBreak | null;
-  freight: number;
-  freightVat: number;
-  incoming: number;
-  incomingVat: number;
-  additionalCharges: number;
-  total: number;
-  effectivePerKg: number;
-  effectivePerUnit: number;
+  billingBasis: "kg" | "cbm" | "container";
+  billingQuantity: number;
+  rateBand: { low: number; high: number; unit: string };
+  transitDays: { min: number; max: number };
+  low: EstimateBreakdown;
+  market: EstimateBreakdown;
+  high: EstimateBreakdown;
 };
 
-export const scopeKeys: ScopeKey[] = [
-  "awb",
-  "handling",
-  "exportCustoms",
-  "xray",
-  "pickup",
-  "destinationHandling",
-  "destinationCustoms",
-  "delivery",
-];
+type Band = Record<DestinationRegion, [number, number]>;
 
-const scopePatterns: Record<ScopeKey, RegExp[]> = {
-  awb: [/\bawb\b/i, /air\s*waybill/i],
-  handling: [/origin\s+handling/i, /handling\s+(?:fee|charge)/i],
-  exportCustoms: [/\bpeb\b/i, /\bnpe\b/i, /export\s+customs/i, /customs\s+clearance\s+(?:origin|export)/i],
-  xray: [/x[\s-]?ray/i, /screening/i],
-  pickup: [/pick[\s-]?up/i, /collection/i, /door\s+to\s+airport/i],
-  destinationHandling: [/destination\s+handling/i, /terminal\s+handling\s+(?:destination|arrival)/i],
-  destinationCustoms: [/destination\s+customs/i, /customs\s+(?:in\s+)?korea/i, /import\s+clearance/i],
-  delivery: [/delivery\s+(?:to|at)\s+(?:buyer|warehouse)/i, /final\s+delivery/i, /trucking\s+(?:at|in)\s+destination/i, /door\s+to\s+door/i],
+const rateBands: Record<FreightMode, Band> = {
+  express: {
+    asean: [6, 10], "east-asia": [7, 12], japan: [8, 13], "middle-east": [9, 15], europe: [11, 18], "north-america": [12, 21], australia: [10, 17],
+  },
+  air: {
+    asean: [2.4, 4.2], "east-asia": [2.8, 5.2], japan: [3.4, 6.2], "middle-east": [3.5, 6.5], europe: [4.5, 8.5], "north-america": [5.5, 10.5], australia: [3.8, 7],
+  },
+  "sea-lcl": {
+    asean: [65, 140], "east-asia": [90, 180], japan: [120, 240], "middle-east": [150, 300], europe: [180, 360], "north-america": [220, 450], australia: [160, 320],
+  },
+  "sea-fcl20": {
+    asean: [600, 1400], "east-asia": [700, 1600], japan: [900, 1900], "middle-east": [1400, 2800], europe: [1800, 3500], "north-america": [2500, 5200], australia: [1600, 3200],
+  },
+  "sea-fcl40": {
+    asean: [950, 2100], "east-asia": [1100, 2500], japan: [1400, 2900], "middle-east": [2200, 4300], europe: [2900, 5400], "north-america": [3900, 7800], australia: [2500, 4800],
+  },
 };
 
-const exclusionPattern = /not\s+included|exclude(?:d|s)?|belum\s+termasuk|tidak\s+termasuk|di\s+luar|excluded|不包含|未包含/i;
-const inclusionPattern = /included|include(?:d|s)?|sudah\s+termasuk|termasuk|inclusive|包含|已包含/i;
+const transitDays: Record<FreightMode, Record<DestinationRegion, [number, number]>> = {
+  express: {
+    asean: [1, 3], "east-asia": [2, 4], japan: [2, 4], "middle-east": [3, 5], europe: [3, 6], "north-america": [3, 6], australia: [3, 5],
+  },
+  air: {
+    asean: [2, 5], "east-asia": [3, 6], japan: [3, 6], "middle-east": [4, 8], europe: [5, 9], "north-america": [5, 10], australia: [4, 8],
+  },
+  "sea-lcl": {
+    asean: [7, 16], "east-asia": [10, 22], japan: [12, 24], "middle-east": [18, 35], europe: [28, 48], "north-america": [30, 52], australia: [18, 35],
+  },
+  "sea-fcl20": {
+    asean: [6, 14], "east-asia": [9, 20], japan: [10, 22], "middle-east": [17, 32], europe: [26, 45], "north-america": [28, 48], australia: [16, 30],
+  },
+  "sea-fcl40": {
+    asean: [6, 14], "east-asia": [9, 20], japan: [10, 22], "middle-east": [17, 32], europe: [26, 45], "north-america": [28, 48], australia: [16, 30],
+  },
+};
 
-export function parseFreightQuote(rawText: string, label = "Quotation") : FreightQuote {
-  const text = normalizeText(rawText);
-  const lines = text.split("\n").map((line) => line.trim()).filter(Boolean);
-  const route = parseRoute(text, lines);
-  const mode = /\bair\s*(?:freight|cargo)?\b|via\s+air|航空/i.test(text)
-    ? "Air"
-    : /\bsea\s*(?:freight|cargo)?\b|ocean\s+freight|海运/i.test(text)
-      ? "Sea"
-      : /\bland\s*(?:freight|cargo)?\b|trucking|road\s+freight|陆运/i.test(text)
-        ? "Land"
-        : "Unknown";
-  const commodity = captureField(text, ["commodity", "komoditas", "goods", "product", "品名", "货物"]) || "-";
-  const carrier = captureField(text, ["carrier", "airline", "shipping line", "maskapai", "承运人"]) || "-";
-  const transitTime = capturePattern(text, /(?:transit(?:\s+time)?|estimasi\s+transit|tt)\s*[:\-]?\s*([^\n]+)/i) || "-";
-  const validity = capturePattern(text, /(?:validity|valid\s+until|berlaku(?:\s+sampai)?|有效期)\s*[:\-]?\s*([^\n]+)/i) || "-";
-  const incoterm = findIncoterm(text);
-  const vatPercent = parsePercent(text, /(?:ppn|vat|tax)\s*[:=]?\s*([\d.,]+)\s*%/i);
-  const incomingRate = parseNamedRate(text, /(?:incoming\s*(?:fee|handling)?|biaya\s+incoming)[^\n\r]{0,30}?(?:rp|idr)\s*([\d.,]+)\s*(?:\/|per)\s*kg/i);
-  const rateBreaks = parseRateBreaks(text);
-  const scope = parseScope(lines);
-  const notes: string[] = [];
+const cargoFactor: Record<CargoType, number> = {
+  general: 1,
+  food: 1.05,
+  perishable: 1.25,
+  electronics: 1.08,
+  dangerous: 1.35,
+  textile: 1,
+};
 
-  if (!rateBreaks.length) notes.push("rate-break-not-found");
-  if (incomingRate > 0 && rateBreaks.some((rate) => rate.currency !== "IDR")) notes.push("mixed-currency");
-  if (incoterm === "DDU") notes.push("legacy-ddu");
-  if (scope.destinationCustoms !== "included" || scope.delivery !== "included") notes.push("destination-cost-incomplete");
-  if (mode === "Unknown") notes.push("mode-unclear");
+const destinationLocal: Record<DestinationRegion, number> = {
+  asean: 140,
+  "east-asia": 220,
+  japan: 260,
+  "middle-east": 320,
+  europe: 420,
+  "north-america": 500,
+  australia: 380,
+};
 
-  return {
-    id: createId(),
-    label,
-    rawText,
-    origin: route.origin,
-    destination: route.destination,
-    originCode: route.originCode,
-    destinationCode: route.destinationCode,
-    mode,
-    commodity,
-    carrier,
-    transitTime,
-    validity,
-    incoterm,
-    vatPercent,
-    incomingRate,
-    rateBreaks,
-    scope,
-    notes,
-    createdAt: new Date().toISOString(),
-  };
-}
-
-export function calculateFreight(
-  quote: FreightQuote,
-  actualWeight: number,
-  dimensions: PackageDimensions,
-  includeIncoming: boolean,
-  additionalCharges: number,
-  units: number,
-): FreightCalculation {
-  const volumetricDivisor = quote.mode === "Air" ? 6000 : quote.mode === "Sea" ? 1000000 : 4000;
-  const volumetricWeight = dimensions.pieces > 0
-    ? (dimensions.pieces * dimensions.lengthCm * dimensions.widthCm * dimensions.heightCm) / volumetricDivisor
+export function estimateFreight(input: FreightEstimateInput): FreightEstimate {
+  const safe = sanitize(input);
+  const volumeCbm = safe.pieces * safe.lengthCm * safe.widthCm * safe.heightCm / 1_000_000;
+  const divisor = safe.mode === "express" ? 5000 : 6000;
+  const volumetricWeight = safe.mode === "express" || safe.mode === "air"
+    ? safe.pieces * safe.lengthCm * safe.widthCm * safe.heightCm / divisor
     : 0;
-  const chargeableWeight = Math.ceil(Math.max(0, actualWeight, volumetricWeight));
-  const selectedBreak = selectRateBreak(quote.rateBreaks, chargeableWeight);
-  const billedWeight = selectedBreak ? Math.max(chargeableWeight, selectedBreak.threshold) : chargeableWeight;
-  const freight = selectedBreak ? billedWeight * selectedBreak.rate : 0;
-  const freightVat = freight * Math.max(0, quote.vatPercent) / 100;
-  const incoming = includeIncoming && selectedBreak?.currency !== "USD" ? billedWeight * Math.max(0, quote.incomingRate) : 0;
-  const incomingVat = incoming * Math.max(0, quote.vatPercent) / 100;
-  const safeAdditional = Math.max(0, additionalCharges);
-  const total = freight + freightVat + incoming + incomingVat + safeAdditional;
+  const chargeableWeight = Math.ceil(Math.max(safe.weightKg, volumetricWeight));
+  const [lowRate, highRate] = rateBands[safe.mode][safe.region];
+  const billingBasis = safe.mode === "sea-lcl" ? "cbm" : safe.mode.startsWith("sea-fcl") ? "container" : "kg";
+  const billingQuantity = billingBasis === "kg" ? Math.max(1, chargeableWeight) : billingBasis === "cbm" ? Math.max(1, roundUp(volumeCbm, 3)) : 1;
+  const marketRate = (lowRate + highRate) / 2;
 
   return {
-    actualWeight: Math.max(0, actualWeight),
+    volumeCbm,
     volumetricWeight,
     chargeableWeight,
-    billedWeight,
-    selectedBreak,
-    freight,
-    freightVat,
-    incoming,
-    incomingVat,
-    additionalCharges: safeAdditional,
-    total,
-    effectivePerKg: actualWeight > 0 ? total / actualWeight : 0,
-    effectivePerUnit: units > 0 ? total / units : 0,
+    billingBasis,
+    billingQuantity,
+    rateBand: { low: lowRate, high: highRate, unit: billingBasis === "kg" ? "USD/kg" : billingBasis === "cbm" ? "USD/CBM" : "USD/container" },
+    transitDays: { min: transitDays[safe.mode][safe.region][0], max: transitDays[safe.mode][safe.region][1] },
+    low: calculateScenario(safe, billingQuantity, lowRate, 0.92),
+    market: calculateScenario(safe, billingQuantity, marketRate, 1),
+    high: calculateScenario(safe, billingQuantity, highRate, 1.12),
   };
 }
 
-export function selectRateBreak(rateBreaks: RateBreak[], weight: number) {
-  const sorted = [...rateBreaks].sort((a, b) => a.threshold - b.threshold);
-  if (!sorted.length) return null;
-  return [...sorted].reverse().find((item) => weight >= item.threshold) ?? sorted[0];
+function calculateScenario(input: FreightEstimateInput, quantity: number, rate: number, feeFactor: number): EstimateBreakdown {
+  const rawFreight = quantity * rate;
+  const cargoAdjustment = rawFreight * (cargoFactor[input.cargoType] - 1);
+  const fuelRate = input.mode === "express" ? 0.22 : input.mode === "air" ? 0.15 : 0.12;
+  const fuelAndSecurity = rawFreight * fuelRate;
+  const originBase = input.mode === "express" ? 25 : input.mode === "air" ? 160 : input.mode === "sea-lcl" ? 250 : 480;
+  const originHandling = originBase * feeFactor;
+  const exportDocuments = (input.mode === "express" ? 20 : 75) * feeFactor;
+  const needsPickup = input.serviceScope === "door-terminal" || input.serviceScope === "door-door";
+  const needsDestination = input.serviceScope === "terminal-door" || input.serviceScope === "door-door";
+  const pickup = needsPickup ? (80 + Math.min(input.weightKg * 0.08, 320)) * feeFactor : 0;
+  const destinationService = needsDestination ? destinationLocal[input.region] * feeFactor : 0;
+  const insurance = input.cargoValueUsd > 0 ? Math.max(10, input.cargoValueUsd * 0.005) : 0;
+  const totalUsd = rawFreight + fuelAndSecurity + originHandling + exportDocuments + pickup + destinationService + cargoAdjustment + insurance;
+
+  return {
+    baseFreight: rawFreight,
+    fuelAndSecurity,
+    originHandling,
+    exportDocuments,
+    pickup,
+    destinationService,
+    cargoAdjustment,
+    insurance,
+    totalUsd,
+    totalIdr: totalUsd * input.exchangeRate,
+  };
 }
 
-export function scopeCoverage(scope: FreightScope) {
-  const included = scopeKeys.filter((key) => scope[key] === "included").length;
-  const excluded = scopeKeys.filter((key) => scope[key] === "excluded").length;
-  return { included, excluded, unclear: scopeKeys.length - included - excluded, score: Math.round((included / scopeKeys.length) * 100) };
+function sanitize(input: FreightEstimateInput): FreightEstimateInput {
+  return {
+    ...input,
+    weightKg: positive(input.weightKg),
+    pieces: positive(input.pieces),
+    lengthCm: positive(input.lengthCm),
+    widthCm: positive(input.widthCm),
+    heightCm: positive(input.heightCm),
+    cargoValueUsd: positive(input.cargoValueUsd),
+    exchangeRate: positive(input.exchangeRate) || 1,
+  };
 }
 
-export function inferServiceScope(scope: FreightScope) {
-  if (scope.pickup === "included" && scope.delivery === "included") return "Door to Door";
-  if (scope.pickup === "included") return "Door to Airport";
-  if (scope.delivery === "included") return "Airport to Door";
-  return "Airport to Airport";
+function positive(value: number) {
+  return Number.isFinite(value) ? Math.max(0, value) : 0;
 }
 
-export function requiredDocuments(commodity: string) {
-  const baseline = ["AWB", "Commercial Invoice", "Packing List"];
-  const lower = commodity.toLowerCase();
-  if (/seafood|fish|shrimp|ikan|udang|makanan|food|frozen|水产|食品/.test(lower)) {
-    return [...baseline, "Certificate of Origin", "Health Certificate"];
-  }
-  if (/wood|timber|furniture|kayu|木/.test(lower)) return [...baseline, "Certificate of Origin", "Timber legality document"];
-  return [...baseline, "Certificate of Origin"];
+function roundUp(value: number, digits: number) {
+  const factor = 10 ** digits;
+  return Math.ceil(value * factor) / factor;
 }
 
-export function clarificationQuestions(quote: FreightQuote, locale: FreightLocale) {
-  const t = questionCopy[locale];
-  const questions: string[] = [];
-  if (quote.incoterm === "DDU") questions.push(t.ddu);
-  if (quote.scope.awb !== "included") questions.push(t.awb);
-  if (quote.scope.exportCustoms !== "included") questions.push(t.exportCustoms);
-  if (quote.scope.destinationHandling !== "included") questions.push(t.destinationHandling);
-  if (quote.scope.destinationCustoms !== "included" || quote.scope.delivery !== "included") questions.push(t.destinationScope);
-  if (quote.validity === "-") questions.push(t.validity);
-  return questions;
-}
-
-export function formatMoney(value: number, currency: "IDR" | "USD", locale: FreightLocale = "id") {
+export function formatCurrency(value: number, currency: "USD" | "IDR", locale: FreightLocale) {
   return new Intl.NumberFormat(locale === "zh" ? "zh-CN" : locale === "en" ? "en-US" : "id-ID", {
     style: "currency",
     currency,
     maximumFractionDigits: currency === "IDR" ? 0 : 2,
   }).format(Number.isFinite(value) ? value : 0);
 }
-
-function parseRateBreaks(text: string) {
-  const matches: RateBreak[] = [];
-  const expressions = [
-    /(?:\+|above\s*)?\s*([\d.,]+)\s*kg[^\n\r]{0,45}?(rp|idr|usd|\$)\s*([\d.,]+)\s*(?:\/|per)\s*kg/gi,
-    /(rp|idr|usd|\$)\s*([\d.,]+)\s*(?:\/|per)\s*kg[^\n\r]{0,45}?(?:\+|above\s*)?\s*([\d.,]+)\s*kg/gi,
-  ];
-  for (const [index, expression] of expressions.entries()) {
-    for (const match of text.matchAll(expression)) {
-      const thresholdRaw = index === 0 ? match[1] : match[3];
-      const currencyRaw = index === 0 ? match[2] : match[1];
-      const rateRaw = index === 0 ? match[3] : match[2];
-      const currency = /usd|\$/i.test(currencyRaw) ? "USD" : "IDR";
-      const threshold = parseLocalizedNumber(thresholdRaw, "IDR");
-      const rate = parseLocalizedNumber(rateRaw, currency);
-      if (threshold > 0 && rate > 0 && !matches.some((item) => item.threshold === threshold && item.rate === rate)) {
-        matches.push({ threshold, rate, currency });
-      }
-    }
-  }
-  return matches.sort((a, b) => a.threshold - b.threshold);
-}
-
-function parseRoute(text: string, lines: string[]) {
-  const explicit = text.match(/(?:route|rute)\s*[:\-]?\s*([^\n→>-]+?)\s*(?:→|->|>|\bto\b|\bke\b)\s*([^\n]+)/i);
-  const routeLine = explicit ? [explicit[1], explicit[2]] : findRouteLine(lines);
-  const originRaw = cleanRoutePoint(routeLine?.[0] ?? "-");
-  const destinationRaw = cleanRoutePoint(routeLine?.[1] ?? "-");
-  return {
-    origin: stripAirportCode(originRaw),
-    destination: stripAirportCode(destinationRaw),
-    originCode: extractAirportCode(originRaw),
-    destinationCode: extractAirportCode(destinationRaw),
-  };
-}
-
-function findRouteLine(lines: string[]) {
-  for (const line of lines) {
-    const match = line.match(/^(.{2,45}?)\s*(?:→|->|>|\bto\b|\bke\b)\s*(.{2,45})$/i);
-    if (match) return [match[1], match[2]];
-  }
-  const codes = normalizeText(lines.join(" ")).match(/\b([A-Z]{3})\b[^\n]{0,25}?(?:→|->|>|\bto\b|\bke\b|-)[^\n]{0,25}?\b([A-Z]{3})\b/);
-  return codes ? [codes[1], codes[2]] : null;
-}
-
-function parseScope(lines: string[]) {
-  const scope = Object.fromEntries(scopeKeys.map((key) => [key, "unclear"])) as FreightScope;
-  for (const key of scopeKeys) {
-    for (const line of lines) {
-      if (!scopePatterns[key].some((pattern) => pattern.test(line))) continue;
-      if (exclusionPattern.test(line)) scope[key] = "excluded";
-      else if (inclusionPattern.test(line) || /\b(?:rp|idr|usd|\$)\s*[\d.,]+/i.test(line)) scope[key] = "included";
-    }
-  }
-  return scope;
-}
-
-function captureField(text: string, labels: string[]) {
-  const escaped = labels.map((label) => label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|");
-  return capturePattern(text, new RegExp(`(?:${escaped})\\s*[:\\-]?\\s*([^\\n]+)`, "i"));
-}
-
-function capturePattern(text: string, expression: RegExp) {
-  return text.match(expression)?.[1]?.trim().replace(/[|;]+$/, "") ?? "";
-}
-
-function parsePercent(text: string, expression: RegExp) {
-  const raw = text.match(expression)?.[1];
-  return raw ? parseLocalizedNumber(raw, "USD") : 0;
-}
-
-function parseNamedRate(text: string, expression: RegExp) {
-  const raw = text.match(expression)?.[1];
-  return raw ? parseLocalizedNumber(raw, "IDR") : 0;
-}
-
-function parseLocalizedNumber(raw: string, currency: "IDR" | "USD") {
-  const clean = raw.replace(/\s/g, "");
-  if (clean.includes(".") && clean.includes(",")) {
-    const decimal = clean.lastIndexOf(".") > clean.lastIndexOf(",") ? "." : ",";
-    const thousands = decimal === "." ? /,/g : /\./g;
-    return Number(clean.replace(thousands, "").replace(decimal, ".")) || 0;
-  }
-  if (clean.includes(",")) {
-    const digits = clean.split(",")[1]?.length ?? 0;
-    return Number(digits === 3 && currency === "IDR" ? clean.replace(/,/g, "") : clean.replace(",", ".")) || 0;
-  }
-  if (clean.includes(".")) {
-    const digits = clean.split(".")[1]?.length ?? 0;
-    return Number(digits === 3 && currency === "IDR" ? clean.replace(/\./g, "") : clean) || 0;
-  }
-  return Number(clean) || 0;
-}
-
-function findIncoterm(text: string) {
-  return text.match(/\b(EXW|FCA|FAS|FOB|CFR|CIF|CPT|CIP|DAP|DPU|DDP|DDU)\b/i)?.[1]?.toUpperCase() ?? "-";
-}
-
-function extractAirportCode(value: string) {
-  return value.match(/\b([A-Z]{3})\b/)?.[1] ?? "-";
-}
-
-function stripAirportCode(value: string) {
-  const cleaned = value.replace(/[()]/g, " ").replace(/\b[A-Z]{3}\b/g, "").replace(/\s+/g, " ").trim();
-  return cleaned || (extractAirportCode(value) !== "-" ? extractAirportCode(value) : "-");
-}
-
-function cleanRoutePoint(value: string) {
-  return value.replace(/\s*(?:mode|commodity|rate|ppn|vat)\s*:.*$/i, "").trim();
-}
-
-function normalizeText(text: string) {
-  return text.replace(/\r\n?/g, "\n").replace(/[–—]/g, "-").replace(/\u00a0/g, " ").trim();
-}
-
-function createId() {
-  return typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `quote-${Date.now()}-${Math.random().toString(36).slice(2)}`;
-}
-
-const questionCopy = {
-  id: {
-    ddu: "Quotation menyebut DDU. Mohon konfirmasi scope aktual: airport-to-airport atau DAP di tujuan?",
-    awb: "Apakah biaya AWB sudah termasuk dalam rate?",
-    exportCustoms: "Apakah pengurusan PEB/NPE dan customs clearance ekspor sudah termasuk?",
-    destinationHandling: "Apakah destination handling dan terminal charges sudah termasuk?",
-    destinationScope: "Apakah customs clearance tujuan dan delivery ke gudang buyer termasuk?",
-    validity: "Sampai tanggal berapa quotation ini berlaku?",
-  },
-  en: {
-    ddu: "The quote mentions DDU. Please confirm the actual scope: airport-to-airport or DAP at destination?",
-    awb: "Is the AWB fee included in the rate?",
-    exportCustoms: "Are export customs clearance and PEB/NPE processing included?",
-    destinationHandling: "Are destination handling and terminal charges included?",
-    destinationScope: "Are destination customs clearance and delivery to the buyer's warehouse included?",
-    validity: "Until what date is this quotation valid?",
-  },
-  zh: {
-    ddu: "报价使用了DDU。请确认实际服务范围：机场到机场，还是目的地DAP？",
-    awb: "运价是否已包含AWB费用？",
-    exportCustoms: "是否包含出口清关及PEB/NPE办理？",
-    destinationHandling: "是否包含目的地操作费及码头费用？",
-    destinationScope: "是否包含目的地清关及送货至买方仓库？",
-    validity: "此报价的有效期至何日？",
-  },
-} satisfies Record<FreightLocale, Record<string, string>>;

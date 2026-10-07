@@ -13,8 +13,8 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   return locale === "zh"
-    ? { title: "货运报价分析器", description: "解析货运报价、选择正确的重量阶梯、比较货代范围并估算出口价格。" }
-    : { title: "Freight Analyzer", description: "Parse freight quotations, select the correct weight break, compare forwarder scope, and estimate export pricing." };
+    ? { title: "货运价格查找器", description: "查找货运计算器，并按路线、重量和体积估算快递、空运、拼箱或整箱费用。" }
+    : { title: "Freight Rate Finder", description: "Find freight calculators and estimate express, air cargo, LCL, or FCL costs by route, weight, and volume." };
 }
 
 export default async function LocalizedFreightAnalyzerPage({ params }: { params: Promise<{ locale: string }> }) {

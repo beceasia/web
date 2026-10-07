@@ -3,8 +3,8 @@ import { FreightAnalyzerClient } from "@/components/freight-analyzer-client";
 import { PageShell } from "@/components/page-shell";
 
 export const metadata: Metadata = {
-  title: "Freight Analyzer",
-  description: "Analisis quotation freight, pilih weight break, bandingkan scope forwarder, dan susun estimasi harga ekspor.",
+  title: "Freight Rate Finder",
+  description: "Cari kalkulator freight dan perkirakan biaya express, air cargo, LCL, atau FCL berdasarkan rute, berat, dan volume.",
 };
 
 export default function IndonesianFreightAnalyzerPage() {
