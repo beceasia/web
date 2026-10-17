@@ -908,13 +908,21 @@ function RelatedLinks({
             className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm"
           >
             <p className="font-black text-navy">{country}</p>
-            <p className="mt-2 text-sm text-slate-500">
+            {country === "Malaysia" ? (
+              <Link
+                href={localePath(locale, "/market-intelligence/malaysia")}
+                className="mt-2 inline-flex items-center gap-1 text-sm font-bold text-teal"
+              >
+                {locale === "zh" ? "打开报告" : locale === "en" ? "Open report" : "Buka laporan"}
+                <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
+            ) : <p className="mt-2 text-sm text-slate-500">
               {locale === "zh"
                 ? "即将推出"
                 : locale === "en"
                   ? "Coming soon"
                   : "Segera hadir"}
-            </p>
+            </p>}
           </div>
         ))}
       </div>

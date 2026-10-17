@@ -1,4 +1,5 @@
 import type { Locale, Localized } from "@/data/apps";
+import { malaysiaMarket } from "@/data/malaysia-market";
 
 export type MarketProduct = {
   product: Localized<string>;
@@ -222,6 +223,21 @@ export const marketCountries: MarketCountry[] = [
     },
     updatedAt: "2026-07-15",
     href: "/market-intelligence/hong-kong",
+  },
+  {
+    slug: malaysiaMarket.slug,
+    country: malaysiaMarket.country,
+    region: { id: "Asia Tenggara", en: "Southeast Asia", zh: "东南亚" },
+    status: { id: "Laporan tersedia", en: "Report available", zh: "报告已发布" },
+    opportunity: { id: "Uji terarah", en: "Targeted validation", zh: "定向验证" },
+    summary: malaysiaMarket.summary,
+    products: {
+      id: ["Kopi hijau", "Lada", "Sambal", "Bumbu", "Camilan"],
+      en: ["Green coffee", "Pepper", "Sauces", "Seasonings", "Snacks"],
+      zh: ["生咖啡豆", "胡椒", "辣椒酱", "调味料", "零食"],
+    },
+    updatedAt: malaysiaMarket.updatedAt,
+    href: "/market-intelligence/malaysia",
   },
 ];
 

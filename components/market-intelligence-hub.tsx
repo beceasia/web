@@ -19,7 +19,7 @@ const copy = {
     openReport: "Buka laporan",
     nextTitle: "Negara berikutnya",
     nextBody: "Area ini disiapkan untuk update negara potensial ekspor lainnya. Setiap negara akan memiliki halaman sendiri dengan data produk, regulasi, buyer channel, risiko, dan strategi masuk pasar.",
-    pipeline: ["Singapura", "Malaysia", "Tiongkok", "Jepang", "Uni Emirat Arab"],
+    pipeline: ["Singapura", "Tiongkok", "Jepang", "Uni Emirat Arab"],
     methodTitle: "Format laporan",
     methodDescription: "Setiap laporan dibuat sebagai market brief praktis, bukan artikel biasa, agar mudah dipakai untuk riset produk dan persiapan pitching ke buyer.",
     methods: [
@@ -42,7 +42,7 @@ const copy = {
     openReport: "Open report",
     nextTitle: "Upcoming countries",
     nextBody: "This area is prepared for other potential export markets. Each country will have a dedicated page covering product data, regulation, buyer channels, risks, and market entry strategy.",
-    pipeline: ["Singapore", "Malaysia", "China", "Japan", "United Arab Emirates"],
+    pipeline: ["Singapore", "China", "Japan", "United Arab Emirates"],
     methodTitle: "Report format",
     methodDescription: "Each report is designed as a practical market brief, not a plain article, so it can support product research and buyer pitching preparation.",
     methods: [
@@ -65,7 +65,7 @@ const copy = {
     openReport: "\u67e5\u770b\u62a5\u544a",
     nextTitle: "\u540e\u7eed\u56fd\u5bb6",
     nextBody: "\u8be5\u533a\u57df\u5df2\u4e3a\u5176\u4ed6\u6f5c\u529b\u51fa\u53e3\u5e02\u573a\u9884\u7559\u3002\u6bcf\u4e2a\u56fd\u5bb6\u5c06\u62e5\u6709\u72ec\u7acb\u9875\u9762\uff0c\u6db5\u76d6\u4ea7\u54c1\u3001\u6cd5\u89c4\u3001\u4e70\u5bb6\u6e20\u9053\u3001\u98ce\u9669\u548c\u5e02\u573a\u8fdb\u5165\u7b56\u7565\u3002",
-    pipeline: ["\u65b0\u52a0\u5761", "\u9a6c\u6765\u897f\u4e9a", "\u4e2d\u56fd", "\u65e5\u672c", "\u963f\u8054\u914b"],
+    pipeline: ["\u65b0\u52a0\u5761", "\u4e2d\u56fd", "\u65e5\u672c", "\u963f\u8054\u914b"],
     methodTitle: "\u62a5\u544a\u683c\u5f0f",
     methodDescription: "\u6bcf\u4efd\u62a5\u544a\u90fd\u8bbe\u8ba1\u6210\u5b9e\u7528\u578b\u5e02\u573a\u7b80\u62a5\uff0c\u4fbf\u4e8e\u4ea7\u54c1\u7814\u7a76\u548c\u4e70\u5bb6\u6c9f\u901a\u51c6\u5907\u3002",
     methods: [
@@ -145,7 +145,7 @@ export function MarketIntelligenceHub({ locale }: { locale: Locale }) {
           </div>
           <div className="inline-flex w-fit items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600">
             <Sparkles className="h-4 w-4 text-gold" />
-            {marketCountries.length} {locale === "id" ? "negara aktif" : locale === "zh" ? "\u4e2a\u5df2\u53d1\u5e03\u5e02\u573a" : "active market"}
+            {marketCountries.length} {locale === "id" ? "negara aktif" : locale === "zh" ? "\u4e2a\u5df2\u53d1\u5e03\u5e02\u573a" : "active markets"}
           </div>
         </div>
 
