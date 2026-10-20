@@ -2,8 +2,8 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const zlib = require("node:zlib");
-const payload = fs.readFileSync(path.join(__dirname, "payload.b64"), "utf8").replace(/\s+/g, "");
-const tar = zlib.gunzipSync(Buffer.from(payload, "base64"));
+const payload = [0,1,2,3,4].map(n=>fs.readFileSync(path.join(__dirname,`payload-${String(n).padStart(2,"0")}.b64`),"utf8")).join("").replace(/\s+/g,"");
+const tar = zlib.brotliDecompressSync(Buffer.from(payload, "base64"));
 const allowed = new Set(["index.html","styles.css","app.js","PAKET_KONTEN_21_HARI.json"]);
 const dest = path.join(__dirname, "dist");
 fs.mkdirSync(dest,{recursive:true});
