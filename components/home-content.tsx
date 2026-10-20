@@ -96,6 +96,22 @@ export function HomeContent({ locale }: { locale: Locale }) {
     "ocr-translate-pdf",
     "research-workbench",
   ].flatMap((slug) => apps.find((app) => app.slug === slug) ?? []);
+  const buyerCopy = locale === "id" ? {
+    eyebrow: "Layanan riset ekspor · Pilot",
+    title: "Temukan calon buyer untuk produk Anda",
+    description: "Riset perusahaan luar negeri sesuai produk Anda, dilengkapi bukti publik, alasan kecocokan, dan panduan menghubungi prospek. Tidak menjamin transaksi.",
+    action: "Lihat Buyer Discovery"
+  } : locale === "zh" ? {
+    eyebrow: "出口研究服务 · 试点",
+    title: "寻找适合您产品的潜在海外买家",
+    description: "按产品研究海外企业，提供公开来源、匹配理由与联系建议。不保证成交。",
+    action: "了解 Buyer Discovery"
+  } : {
+    eyebrow: "Export research service · Pilot",
+    title: "Find potential overseas buyers for your product",
+    description: "Product-specific company research with public sources, fit reasons, and suggested outreach. No purchase guarantee.",
+    action: "Explore Buyer Discovery"
+  };
   return (
     <>
       <HeroSection locale={locale} />
@@ -158,6 +174,18 @@ export function HomeContent({ locale }: { locale: Locale }) {
             className="mt-5 inline-flex min-h-12 items-center rounded-xl bg-white px-4 font-bold text-navy"
           >
             {copy.plan} →
+          </Link>
+        </div>
+      </section>
+      <section className="mx-auto max-w-7xl px-4 pb-4 pt-10 sm:px-6 lg:px-8">
+        <div className="grid gap-6 rounded-3xl border border-teal/20 bg-white p-6 shadow-sm sm:p-9 lg:grid-cols-[1fr_auto] lg:items-center">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-teal">{buyerCopy.eyebrow}</p>
+            <h2 className="mt-3 text-2xl font-black text-navy sm:text-3xl">{buyerCopy.title}</h2>
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600">{buyerCopy.description}</p>
+          </div>
+          <Link href={localePath(locale, "/buyer-discovery")} className="inline-flex min-h-12 items-center justify-center rounded-xl bg-navy px-5 py-3 text-sm font-bold text-white hover:bg-navy-light">
+            {buyerCopy.action} →
           </Link>
         </div>
       </section>

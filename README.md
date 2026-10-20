@@ -33,6 +33,15 @@ Edit app catalog data in `data/apps.ts`. App entries must contain only public-sa
 
 Edit bilingual UI copy in `data/i18n.ts`.
 
+## Buyer Discovery pilot
+
+The `/buyer-discovery` route (also available at `/en/buyer-discovery` and `/zh/buyer-discovery`) presents a research-on-request service. It is **not** a live buyer database or automatic buyer matching tool.
+
+- The example company is a publicly discoverable prospect. Its current demand or purchase intent is not established.
+- The form is client-side only. Visitors explicitly open a WhatsApp or email draft and must send it themselves; no request is stored in the website backend.
+- Research scope, fees, timelines, and deliverables must be agreed before work begins.
+- The existing Export Intelligence buyer signals remain labeled demonstration data.
+
 ## Privacy audit
 
 ```bash

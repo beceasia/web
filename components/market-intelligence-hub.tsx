@@ -109,6 +109,9 @@ export function MarketIntelligenceHub({ locale }: { locale: Locale }) {
             <p className="mt-8 text-sm font-bold uppercase tracking-[0.28em] text-teal">{text.eyebrow}</p>
             <h1 className="mt-4 max-w-4xl text-4xl font-black tracking-tight text-navy sm:text-5xl lg:text-6xl">{text.title}</h1>
             <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-600">{text.description}</p>
+            <Link href={localePath(locale, "/buyer-discovery")} className="mt-6 inline-flex min-h-12 items-center gap-2 rounded-xl bg-navy px-5 py-3 text-sm font-bold text-white transition hover:bg-navy-light">
+              {locale === "id" ? "Riset calon buyer sesuai produk" : locale === "zh" ? "按产品研究潜在买家" : "Research potential buyers"} <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
           </div>
 
           <div className="rounded-[2rem] border border-white bg-white/80 p-5 shadow-soft backdrop-blur">
