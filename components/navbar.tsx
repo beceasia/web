@@ -19,6 +19,7 @@ export function Navbar({
       "Riset Pasar",
       "Alat Kerja",
       "Panduan",
+      "Layanan Riset",
       "Konsultasi",
       "Buka menu",
     ],
@@ -27,12 +28,13 @@ export function Navbar({
       "Market Research",
       "Business Tools",
       "Guides",
+      "Research Services",
       "Consultation",
       "Open menu",
     ],
-    zh: ["出口", "市场研究", "业务工具", "指南", "咨询", "打开菜单"],
+    zh: ["出口", "市场研究", "业务工具", "指南", "研究服务", "咨询", "打开菜单"],
   }[locale];
-  const paths = ["/export-os", "/market-intelligence", "/apps", "/docs"];
+  const paths = ["/export-os", "/market-intelligence", "/apps", "/docs", "/services/custom-research"];
   const links = paths.map((path, i) => ({
     href: localePath(locale, path),
     label: labels[i],
@@ -49,7 +51,7 @@ export function Navbar({
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-4 py-3 sm:px-6 lg:px-8">
         <Logo locale={locale} />
         <nav
-          aria-label={labels[5]}
+          aria-label={labels[6]}
           className="hidden items-center gap-1 lg:flex"
         >
           {links.map((link) => (
@@ -67,14 +69,14 @@ export function Navbar({
             rel="noreferrer"
             className="rounded-xl bg-navy px-4 py-3 text-sm font-bold text-white"
           >
-            {labels[4]}
+            {labels[5]}
           </a>
         </nav>
         <div className="flex items-center gap-2">
           <LanguageSwitcher locale={locale} currentPath={currentPath} />
           <details className="relative lg:hidden">
             <summary
-              aria-label={labels[5]}
+              aria-label={labels[6]}
               className="grid h-11 w-11 cursor-pointer list-none place-items-center rounded-xl border border-slate-200"
             >
               <Menu size={22} />
@@ -95,7 +97,7 @@ export function Navbar({
                 rel="noreferrer"
                 className="block min-h-12 rounded-xl px-4 py-3 text-sm font-semibold text-emerald-700"
               >
-                {labels[4]}
+                {labels[5]}
               </a>
             </nav>
           </details>

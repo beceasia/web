@@ -10,6 +10,10 @@ import { SocialContactSection } from "./social-contact-section";
 export function HomeContent({ locale }: { locale: Locale }) {
   const copy = {
     id: {
+      customService: "Riset khusus sesuai kebutuhan bisnis",
+      customTitle: "Custom Market & Supply Research",
+      customBody: "Butuh data pemasok, kapasitas produksi, harga komoditas, atau dasar penawaran? Riset disusun menurut produk, wilayah, dan keputusan bisnis, lengkap dengan sumber serta pemisahan data aktual dan estimasi.",
+      customAction: "Pelajari layanan riset",
       tools: "Empat alat untuk mulai bekerja",
       description:
         "Cari referensi HS, hitung biaya ekspor, siapkan dokumen, dan susun riset.",
@@ -34,6 +38,10 @@ export function HomeContent({ locale }: { locale: Locale }) {
       open: "Buka",
     },
     en: {
+      customService: "Tailored research for business decisions",
+      customTitle: "Custom Market & Supply Research",
+      customBody: "Need supplier maps, production estimates, commodity price history, or procurement analysis? Get research scoped to your product and region with transparent sources and assumptions.",
+      customAction: "Explore research service",
       tools: "Four tools to get started",
       description:
         "Explore HS references, estimate export costs, prepare documents, and organize research.",
@@ -58,6 +66,10 @@ export function HomeContent({ locale }: { locale: Locale }) {
       open: "Open",
     },
     zh: {
+      customService: "按业务需求定制研究",
+      customTitle: "Custom Market & Supply Research",
+      customBody: "需要供应商信息、产量估算、商品历史价格或采购成本分析？根据商品和地区开展研究，并注明来源与假设。",
+      customAction: "了解研究服务",
       tools: "四个工具助您开始",
       description: "查询 HS 参考、估算出口成本、准备文件并组织研究。",
       results: "将结果转化为行动",
@@ -147,6 +159,14 @@ export function HomeContent({ locale }: { locale: Locale }) {
           >
             {copy.plan} →
           </Link>
+        </div>
+      </section>
+      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="rounded-3xl bg-navy p-6 text-white sm:p-10">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-teal">{copy.customService}</p>
+          <h2 className="mt-3 text-2xl font-black sm:text-3xl">{copy.customTitle}</h2>
+          <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-200">{copy.customBody}</p>
+          <Link href={localePath(locale, "/services/custom-research")} className="mt-6 inline-flex min-h-12 items-center rounded-xl bg-teal px-5 py-3 text-sm font-bold text-white hover:bg-emerald-700">{copy.customAction} →</Link>
         </div>
       </section>
       <SocialContactSection locale={locale} />
