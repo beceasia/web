@@ -420,6 +420,10 @@ export function BuyerDiscoveryPage({ locale }: { locale: Locale }) {
                 {text.openSource}<ExternalLink size={17} aria-hidden="true" />
               </a>
               <p className="text-xs leading-6 text-slate-500">{text.exampleWarning}</p>
+              <Link href={localePath(locale, "/buyer-discovery/demo-01")} className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-navy px-5 py-3 text-sm font-bold text-white hover:bg-navy-light">
+                {locale === "id" ? "Buka laporan DEMO lengkap (5 prospek)" : locale === "zh" ? "查看完整演示报告（5 家企业）" : "View complete DEMO report (5 prospects)"}
+                <ArrowRight size={17} aria-hidden="true" />
+              </Link>
             </div>
           </div>
         </div>
