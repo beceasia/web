@@ -32,7 +32,7 @@ export function Navbar({
       "Consultation",
       "Open menu",
     ],
-    zh: ["出口", "市场研究", "业务工具", "指南", "咨询", "打开菜单"],
+    zh: ["出口", "市场研究", "业务工具", "指南", "研究服务", "咨询", "打开菜单"],
   }[locale];
   const paths = ["/export-os", "/market-intelligence", "/apps", "/docs", "/services/custom-research"];
   const links = paths.map((path, i) => ({
@@ -76,7 +76,7 @@ export function Navbar({
           <LanguageSwitcher locale={locale} currentPath={currentPath} />
           <details className="relative lg:hidden">
             <summary
-              aria-label={labels[5]}
+              aria-label={labels[6]}
               className="grid h-11 w-11 cursor-pointer list-none place-items-center rounded-xl border border-slate-200"
             >
               <Menu size={22} />
