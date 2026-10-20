@@ -9,7 +9,7 @@ const companies = [
     name: "Pemborong Maju A&A Sdn Bhd",
     location: "Batu Caves, Selangor",
     role: "Importir dan distributor rempah",
-    fit: "Situs resmi menyebut impor dan distribusi rempah curah serta mencantumkan Black Pepper.",
+    fit: "Situs resmi menyebut impor dan distribusi rempah curah serta mencantumkan Black Pepper Powder; kebutuhan lada utuh belum dipastikan.",
     contact: "purchase@pemborongmaju.com.my",
     url: "https://pemborongmaju.com.my/index.php/product/",
     status: "P1",
@@ -31,7 +31,7 @@ const companies = [
     role: "Perusahaan perdagangan rempah",
     fit: "Situs perusahaan menampilkan perdagangan rempah dan produk lada; aktivitas pembelian dari Indonesia belum terbukti.",
     contact: "office@skhpg.com",
-    url: "https://skhspices.com/",
+    url: "https://www.halal.gov.my/directory/slm_viewdetail.php?comp_code=COMP-20100706-011046&ty=CO&type=C",
     status: "P1*",
     question: "Apakah perusahaan membeli lada hitam utuh asal Indonesia, dan dengan spesifikasi apa?",
   },
@@ -60,6 +60,23 @@ const companies = [
 const sourceWits = "https://wits.worldbank.org/trade/comtrade/en/country/MYS/year/2024/tradeflow/Imports/partner/ALL/product/090411";
 const sourceKkm = "https://hq.moh.gov.my/fsq/prosedur-pengimportan-makanan";
 
+const localizedCompanyDetails: Record<"en" | "zh", { role: string; fit: string; question: string }[]> = {
+  en: [
+    { role: "Spice importer and distributor", fit: "Official site describes importing/distributing bulk spices and lists black pepper powder.", question: "Are Indonesian whole black pepper suppliers being considered? What grades, MOQ and documents are required?" },
+    { role: "Spice importer, wholesaler and retailer", fit: "Official profile describes spice imports and offers black and white pepper.", question: "Does the company assess new whole-pepper suppliers? Who handles sourcing?" },
+    { role: "Spice trading business", fit: "Corporate site discusses spices and pepper. Purchasing Indonesian pepper is not established.", question: "Does the firm buy Indonesian whole black pepper, and to what specifications?" },
+    { role: "Food ingredient importer", fit: "Search-indexed corporate information lists whole black pepper in 500/550 g/L bulk-density grades; direct site access needs rechecking.", question: "Would Indonesian origin be accepted? Are sterilization, certificates or additional testing required?" },
+    { role: "Spice processor", fit: "Official product catalog lists black pepper and processing, without proving raw-material demand.", question: "Does the factory buy whole black pepper as an ingredient, and how are suppliers qualified?" },
+  ],
+  zh: [
+    { role: "香料进口与分销企业", fit: "官网介绍散装香料进口及分销，并列有黑胡椒粉产品。", question: "是否考虑印尼整粒黑胡椒供应商？需要什么等级、MOQ 和文件？" },
+    { role: "香料进口、批发及零售企业", fit: "官网介绍香料进口业务，并提供黑胡椒及白胡椒。", question: "是否评估新的整粒胡椒供应商？谁负责采购？" },
+    { role: "香料贸易企业", fit: "企业网站介绍香料及胡椒产品；尚不能证明其采购印尼胡椒。", question: "是否采购印尼整粒黑胡椒？需要什么规格？" },
+    { role: "食品原料进口企业", fit: "公开搜索索引列出容重 500/550 g/L 的整粒黑胡椒；官网直接访问仍需复核。", question: "是否接受印尼产地？需要灭菌、质量证明或其他检测吗？" },
+    { role: "香料加工企业", fit: "官网产品目录列有黑胡椒和加工业务，但未证明其当前原料需求。", question: "工厂是否采购整粒黑胡椒作原料？供应商如何获得资格？" },
+  ],
+};
+
 const copy = {
   id: {
     back:"Kembali ke Buyer Discovery",
@@ -77,7 +94,7 @@ const copy = {
     evidence:"Bukti relevansi",
     toCheck:"Hal yang perlu dikonfirmasi",
     site:"Lihat sumber perusahaan",
-    caveat:"P1 menunjukkan relevansi produk dan bisnis. P1* membutuhkan pemeriksaan ulang tambahan. P2 menunjukkan perusahaan pengolah terkait. Kode ini bukan probabilitas pembelian atau tingkat verifikasi transaksi.",
+    caveat:"P1 menunjukkan relevansi produk dan bisnis. P1* membutuhkan pemeriksaan ulang tambahan, terutama akses situs Sri Jaya dan asal barang. P2 menunjukkan pengolah terkait. Kode ini bukan probabilitas pembelian atau bukti impor independen.",
     questions:"Sebelum menghubungi perusahaan",
     prep:"Siapkan spesifikasi nyata: bentuk/grade lada, moisture, bulk density, kemasan, kapasitas, MOQ, lead time, sertifikasi yang dimiliki, dan harga menurut Incoterms.",
     importRules:"Persyaratan pasar Malaysia",
@@ -148,10 +165,10 @@ export function BuyerDemo01Report({locale}:{locale:Locale}) {
               <h3 className="mt-2 text-xl font-black text-navy">{c.name}</h3></div>
               <span className="h-fit rounded-full bg-teal/10 px-3 py-1 text-xs font-bold text-teal">{c.status}</span>
             </div>
-            <p className="mt-2 text-sm font-semibold text-slate-500">{c.role}</p>
+            <p className="mt-2 text-sm font-semibold text-slate-500">{locale === "id" ? c.role : localizedCompanyDetails[locale][index].role}</p>
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
-              <div><p className="text-xs font-bold uppercase tracking-wide text-navy">{t.evidence}</p><p className="mt-2 text-sm leading-7 text-slate-700">{c.fit}</p></div>
-              <div><p className="text-xs font-bold uppercase tracking-wide text-navy">{t.toCheck}</p><p className="mt-2 text-sm leading-7 text-slate-700">{c.question}</p></div>
+              <div><p className="text-xs font-bold uppercase tracking-wide text-navy">{t.evidence}</p><p className="mt-2 text-sm leading-7 text-slate-700">{locale === "id" ? c.fit : localizedCompanyDetails[locale][index].fit}</p></div>
+              <div><p className="text-xs font-bold uppercase tracking-wide text-navy">{t.toCheck}</p><p className="mt-2 text-sm leading-7 text-slate-700">{locale === "id" ? c.question : localizedCompanyDetails[locale][index].question}</p></div>
             </div>
             <div className="mt-5 flex flex-wrap gap-4 border-t border-slate-200 pt-4">
               <span className="text-sm font-semibold text-slate-700">{c.contact}</span>
