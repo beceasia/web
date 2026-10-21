@@ -18,7 +18,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/zh/market-intelligence/hong-kong",
     "/market-intelligence/malaysia",
     "/en/market-intelligence/malaysia",
-    "/zh/market-intelligence/malaysia"
+    "/zh/market-intelligence/malaysia",
+    "/market-intelligence/singapore",
+    "/en/market-intelligence/singapore",
+    "/zh/market-intelligence/singapore"
   ];
   const catalog = [...apps, ...businessToolsApps, ...creativeBusinessApps, ...communityGamesApps, ...attendanceApps];
   return [
