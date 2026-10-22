@@ -113,7 +113,7 @@ export const tradeResources: TradeResource[] = [
   {
     id: "inaexport", name: "INAexport",
     url: "https://inaexport.id/", category: "support", agency: "Ditjen PEN, Kementerian Perdagangan", region: "Indonesia",
-    description: { id: "Promosi produk Indonesia, profil eksportir, informasi pasar dan jalur menghubungi calon mitra.", en: "Indonesian exporter promotion, product listings and potential-buyer contacts.", zh: "印尼出口商展示、产品推广及潜在买家联系。" },
+    description: { id: "Portal promosi eksportir Indonesia dan informasi peluang B2B; periksa kembali akses dan fitur setelah migrasi sistem 2026.", en: "Indonesian exporter promotion and B2B information; confirm access and features following its 2026 system migration.", zh: "印尼出口商推广和 B2B 信息；系统于 2026 年迁移，使用前请核实服务状态。" },
     action: { id: "Saat menyiapkan promosi B2B", en: "When preparing B2B promotion", zh: "准备 B2B 推广时" },
   },
   {
