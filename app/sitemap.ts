@@ -8,7 +8,7 @@ import { attendanceApps } from "@/data/attendance-apps";
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = "https://www.bece.asia";
   const now = new Date();
-  const core = ["/buyer-discovery", "/en/buyer-discovery", "/zh/buyer-discovery", "/buyer-discovery/demo-01", "/en/buyer-discovery/demo-01", "/zh/buyer-discovery/demo-01", "/services/custom-research", "/en/services/custom-research", "/zh/services/custom-research", "", "/export-os", "/en/export-os", "/zh/export-os", "/export-os/intelligence", "/en/export-os/intelligence", "/zh/export-os/intelligence", "/apps", "/en/apps/freight-analyzer", "/zh/apps/freight-analyzer", "/utilities", "/roadmap", "/feedback", "/privacy", "/terms", "/disclaimer", "/data-policy"];
+  const core = ["/buyer-discovery", "/en/buyer-discovery", "/zh/buyer-discovery", "/buyer-discovery/demo-01", "/en/buyer-discovery/demo-01", "/zh/buyer-discovery/demo-01", "/services/custom-research", "/en/services/custom-research", "/zh/services/custom-research", "/trade-resources", "/en/trade-resources", "/zh/trade-resources", "", "/export-os", "/en/export-os", "/zh/export-os", "/export-os/intelligence", "/en/export-os/intelligence", "/zh/export-os/intelligence", "/apps", "/en/apps/freight-analyzer", "/zh/apps/freight-analyzer", "/utilities", "/roadmap", "/feedback", "/privacy", "/terms", "/disclaimer", "/data-policy"];
   const marketIntelligence = [
     "/market-intelligence",
     "/en/market-intelligence",
