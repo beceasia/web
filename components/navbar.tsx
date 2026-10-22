@@ -21,6 +21,7 @@ export function Navbar({
       "Alat Kerja",
       "Panduan",
       "Layanan Riset",
+      "Sumber Data",
       "Konsultasi",
       "Buka menu",
     ],
@@ -31,12 +32,13 @@ export function Navbar({
       "Business Tools",
       "Guides",
       "Research Services",
+      "Data Sources",
       "Consultation",
       "Open menu",
     ],
-    zh: ["出口", "市场研究", "寻找买家", "业务工具", "指南", "研究服务", "咨询", "打开菜单"],
+    zh: ["出口", "市场研究", "寻找买家", "业务工具", "指南", "研究服务", "数据来源", "咨询", "打开菜单"],
   }[locale];
-  const paths = ["/export-os", "/market-intelligence", "/buyer-discovery", "/apps", "/docs", "/services/custom-research"];
+  const paths = ["/export-os", "/market-intelligence", "/buyer-discovery", "/apps", "/docs", "/services/custom-research", "/trade-resources"];
   const links = paths.map((path, i) => ({
     href: localePath(locale, path),
     label: labels[i],
@@ -53,7 +55,7 @@ export function Navbar({
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-4 py-3 sm:px-6 lg:px-8">
         <Logo locale={locale} />
         <nav
-          aria-label={labels[7]}
+          aria-label={labels[8]}
           className="hidden items-center gap-1 xl:flex"
         >
           {links.map((link) => (
@@ -71,7 +73,7 @@ export function Navbar({
             rel="noreferrer"
             className="rounded-xl bg-navy px-4 py-3 text-sm font-bold text-white"
           >
-            {labels[6]}
+            {labels[7]}
           </a>
         </nav>
         <div className="flex items-center gap-2">
