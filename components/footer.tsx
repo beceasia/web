@@ -27,6 +27,7 @@ export function Footer({ locale }: { locale: Locale }) {
         </div>
         <div className="grid grid-cols-2 gap-3 text-sm">
           <Link href={localePath(locale, "/apps")} className="text-slate-600 hover:text-navy">{dict.nav.apps}</Link>
+          <Link href={localePath(locale, "/trade-resources")} className="text-slate-600 hover:text-navy">{locale === "id" ? "Sumber Data" : locale === "zh" ? "数据来源" : "Data Sources"}</Link>
           <Link href={localePath(locale, "/utilities")} className="text-slate-600 hover:text-navy">{dict.nav.utilities}</Link>
           <Link href={localePath(locale, "/roadmap")} className="text-slate-600 hover:text-navy">{dict.nav.roadmap}</Link>
           <Link href={localePath(locale, "/feedback")} className="text-slate-600 hover:text-navy">{dict.nav.feedback}</Link>
