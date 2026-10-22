@@ -90,6 +90,26 @@ export function HomeContent({ locale }: { locale: Locale }) {
       open: "打开",
     },
   }[locale];
+  const resourceCopy = {
+    id: {
+      eyebrow: "Referensi praktis",
+      title: "20 sumber untuk riset ekspor-impor",
+      body: "Cari portal resmi, statistik perdagangan, tarif, peluang pasar dan sumber belajar. Pilih sumber sesuai kebutuhan lalu verifikasi informasi terbarunya.",
+      action: "Jelajahi Sumber Data",
+    },
+    en: {
+      eyebrow: "Practical references",
+      title: "20 resources for export-import research",
+      body: "Explore official portals, trade statistics, tariffs, market opportunities and learning resources. Pick a source and verify its latest information.",
+      action: "Explore Data Sources",
+    },
+    zh: {
+      eyebrow: "实用参考",
+      title: "20 个进出口研究资源",
+      body: "查找官方门户、贸易统计、关税、市场机会和学习资源。按需要选择来源并核实最新信息。",
+      action: "浏览数据来源",
+    },
+  }[locale];
   const featured = [
     "btki-smart-search",
     "kalkulator-sawit",
@@ -119,6 +139,19 @@ export function HomeContent({ locale }: { locale: Locale }) {
         <SectionHeading title={copy.tools} description={copy.description} />
         <div className="mt-6">
           <AppGrid apps={featured} locale={locale} />
+        </div>
+      </section>
+      <section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 lg:px-8">
+        <div className="flex flex-col gap-5 rounded-3xl border border-teal/20 bg-white p-6 shadow-sm sm:p-8 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-teal">{resourceCopy.eyebrow}</p>
+            <h2 className="mt-3 text-2xl font-black text-navy sm:text-3xl">{resourceCopy.title}</h2>
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600">{resourceCopy.body}</p>
+          </div>
+          <Link
+            href={localePath(locale, "/trade-resources")}
+            className="inline-flex min-h-12 shrink-0 items-center justify-center rounded-xl bg-navy px-5 py-3 text-sm font-bold text-white hover:bg-navy-light"
+          >{resourceCopy.action} →</Link>
         </div>
       </section>
       <section className="bg-white py-12">
