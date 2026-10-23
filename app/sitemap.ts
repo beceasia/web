@@ -19,6 +19,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/market-intelligence/malaysia",
     "/en/market-intelligence/malaysia",
     "/zh/market-intelligence/malaysia",
+    "/market-intelligence/china",
+    "/en/market-intelligence/china",
+    "/zh/market-intelligence/china",
     "/market-intelligence/singapore",
     "/en/market-intelligence/singapore",
     "/zh/market-intelligence/singapore"

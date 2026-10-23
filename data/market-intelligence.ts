@@ -1,4 +1,5 @@
 import type { Locale, Localized } from "@/data/apps";
+import { chinaMarket } from "@/data/china-market";
 import { singaporeMarket } from "@/data/singapore-market";
 import { malaysiaMarket } from "@/data/malaysia-market";
 
@@ -254,6 +255,21 @@ export const marketCountries: MarketCountry[] = [
     },
     updatedAt: singaporeMarket.updatedAt,
     href: "/market-intelligence/singapore",
+  },
+  {
+    slug: chinaMarket.slug,
+    country: chinaMarket.country,
+    region: { id: "Asia Timur", en: "East Asia", zh: "东亚" },
+    status: { id: "Laporan tersedia", en: "Report available", zh: "报告已发布" },
+    opportunity: { id: "Uji terarah", en: "Targeted validation", zh: "定向验证" },
+    summary: chinaMarket.summary,
+    products: {
+      id: ["Kopi", "Lada", "Kelapa", "Rumput laut", "Kakao"],
+      en: ["Coffee", "Pepper", "Coconut", "Seaweed", "Cocoa"],
+      zh: ["咖啡", "胡椒", "椰子", "海藻", "可可"],
+    },
+    updatedAt: chinaMarket.updatedAt,
+    href: "/market-intelligence/china",
   },
 ];
 
