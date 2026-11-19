@@ -18,7 +18,7 @@ export default async function ArtikelPage({searchParams}:{searchParams:Promise<{
      <h2 className="text-xl font-black text-navy">Pilih kategori</h2>
      <nav aria-label="Kategori artikel" className="mt-4 flex flex-wrap gap-2">
        <Link href="/artikel" className={`rounded-full border px-4 py-2 text-sm font-semibold ${!selected?"border-navy bg-navy text-white":"border-slate-200 bg-white text-navy"}`}>Semua</Link>
-       {articleCategories.map(c=><Link key={c.slug} href={`/artikel?kategori=${c.slug}`} className={`rounded-full border px-4 py-2 text-sm font-semibold ${selected?.slug===c.slug?"border-navy bg-navy text-white":"border-slate-200 bg-white text-navy hover:border-teal"}`}>{c.label}</Link>)}
+       {articleCategories.map(c=><Link key={c.slug} href={`/artikel/kategori/${c.slug}`} className={`rounded-full border px-4 py-2 text-sm font-semibold ${selected?.slug===c.slug?"border-navy bg-navy text-white":"border-slate-200 bg-white text-navy hover:border-teal"}`}>{c.label}</Link>)}
      </nav>
      <div className="mt-10 flex items-center justify-between gap-3"><h2 className="text-2xl font-black text-navy">{selected?selected.label:"Artikel terbaru"}</h2><span className="text-sm text-slate-500">{entries.length} artikel</span></div>
      {entries.length?<div className="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">{entries.map(a=>
