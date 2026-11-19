@@ -11,6 +11,15 @@ export async function generateMetadata({params}:Props):Promise<Metadata>{
 }
 export default async function DetailArtikelPage({params}:Props){
  const {slug}=await params;const a=getArticle(slug);if(!a)notFound();
+ const relatedArticles=getArticles().filter(item=>item.slug!==a.slug && item.category===a.category).slice(0,3);
+ const relatedResource={
+  "ekspor-pasar-asia":{label:"Riset pasar negara tujuan",url:"/market-intelligence"},
+  "kebijakan-perdagangan":{label:"Sumber data dan regulasi perdagangan",url:"/trade-resources"},
+  "impor-logistik":{label:"Sumber data ekspor-impor",url:"/trade-resources"},
+  "umkm-bisnis":{label:"Rencana dan kesiapan ekspor",url:"/export-os"},
+  "data-ekonomi":{label:"Sumber data resmi perdagangan",url:"/trade-resources"},
+  "ai-otomatisasi":{label:"Alat produktivitas bisnis",url:"/apps"}
+ }[a.category];
  const articleUrl=`https://www.bece.asia/artikel/${slug}`;
  const structuredData=[
   {"@context":"https://schema.org","@type":"NewsArticle",
@@ -55,6 +64,16 @@ export default async function DetailArtikelPage({params}:Props){
     <p className="mt-3 text-sm text-slate-600">Judul sumber: {a.originalTitle}</p>
     <ul className="mt-4 list-disc space-y-3 pl-5 text-sm leading-7 text-slate-700">{a.sources.map(s=><li key={s.url}><a href={s.url} target="_blank" rel="noopener noreferrer" className="font-bold text-teal underline underline-offset-2">{s.name}</a>{s.publishedAt?` · ${formatArticleDate(s.publishedAt)}`:""}</li>)}</ul>
     <p className="mt-5 text-xs leading-6 text-slate-500">Fakta berasal dari rujukan di atas. Analisis dan langkah praktis merupakan penjelasan BECE, bukan keputusan resmi pemerintah. Periksa ketentuan terbaru sebelum bertransaksi.</p>
+  </section>
+  <section className="mt-12 border-t border-slate-200 pt-8">
+    <h2 className="text-xl font-black text-navy">Baca dan pelajari lebih lanjut</h2>
+    <Link href={relatedResource.url} className="mt-4 inline-flex rounded-xl border border-teal/30 bg-white px-4 py-3 text-sm font-bold text-navy hover:border-teal">{relatedResource.label} →</Link>
+    {relatedArticles.length > 0 && <div className="mt-6 grid gap-4 sm:grid-cols-2">
+      {relatedArticles.map(item=><Link key={item.slug} href={`/artikel/${item.slug}`} className="rounded-2xl border border-slate-200 bg-white p-5 hover:border-teal">
+        <span className="text-xs text-slate-500">{formatArticleDate(item.publishedAt)}</span>
+        <h3 className="mt-2 font-bold leading-7 text-navy">{item.title}</h3>
+      </Link>)}
+    </div>}
   </section>
   <div className="mt-10 border-t border-slate-200 pt-6"><Link href="/artikel" className="font-bold text-navy hover:underline">← Kembali ke semua artikel</Link></div>
  </article></PageShell>;
