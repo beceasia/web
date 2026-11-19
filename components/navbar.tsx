@@ -67,6 +67,7 @@ export function Navbar({
               {link.label}
             </Link>
           ))}
+          <Link href="/artikel" className="rounded-xl px-3 py-3 text-sm font-semibold text-navy hover:bg-slate-100">{locale === "en" ? "Articles" : locale === "zh" ? "文章" : "Artikel"}</Link>
           <a
             href={consultation}
             target="_blank"
@@ -95,6 +96,7 @@ export function Navbar({
                   {link.label}
                 </Link>
               ))}
+              <Link href="/artikel" className="block min-h-12 rounded-xl px-4 py-3 text-sm font-semibold text-navy hover:bg-slate-100">{locale === "en" ? "Articles" : locale === "zh" ? "文章" : "Artikel"}</Link>
               <a
                 href={consultation}
                 target="_blank"
