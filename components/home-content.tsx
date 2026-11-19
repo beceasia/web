@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getArticles, getArticleCategory, formatArticleDate } from "@/lib/articles";
 import type { Locale } from "@/data/apps";
 import { apps } from "@/data/apps";
 import { localePath } from "@/lib/routes";
@@ -110,6 +111,7 @@ export function HomeContent({ locale }: { locale: Locale }) {
       action: "浏览数据来源",
     },
   }[locale];
+  const latestArticles = getArticles().slice(0, 3);
   const featured = [
     "btki-smart-search",
     "kalkulator-sawit",
@@ -230,6 +232,24 @@ export function HomeContent({ locale }: { locale: Locale }) {
           <Link href={localePath(locale, "/services/custom-research")} className="mt-6 inline-flex min-h-12 items-center rounded-xl bg-teal px-5 py-3 text-sm font-bold text-white hover:bg-emerald-700">{copy.customAction} →</Link>
         </div>
       </section>
+      {latestArticles.length > 0 && <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-teal">BECE UPDATE</p>
+            <h2 className="mt-3 text-2xl font-black text-navy sm:text-3xl">{locale === "id" ? "Artikel Perdagangan Asia" : locale === "zh" ? "亚洲贸易文章" : "Asia Trade Articles"}</h2>
+            <p className="mt-2 max-w-2xl text-sm leading-7 text-slate-600">{locale === "id" ? "Berita ekspor-impor yang dijelaskan dengan bahasa sederhana, beserta sumber dan langkah praktis." : locale === "zh" ? "亚洲进出口动态，附有信息来源与实用建议。" : "Asia trade updates with verified sources and practical takeaways."}</p>
+          </div>
+          <Link href="/artikel" className="inline-flex min-h-11 items-center rounded-xl bg-navy px-5 py-3 text-sm font-bold text-white">{locale === "id" ? "Semua artikel" : locale === "zh" ? "所有文章" : "All articles"} →</Link>
+        </div>
+        <div className="grid gap-5 md:grid-cols-3">
+          {latestArticles.map(article => <Link key={article.slug} href={`/artikel/${article.slug}`} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm hover:border-teal">
+            <span className="text-xs font-bold uppercase tracking-wider text-teal">{getArticleCategory(article.category)?.label}</span>
+            <h3 className="mt-3 text-lg font-black leading-snug text-navy">{article.title}</h3>
+            <p className="mt-3 text-sm leading-7 text-slate-600">{article.excerpt}</p>
+            <p className="mt-4 text-xs text-slate-500">{formatArticleDate(article.publishedAt)}</p>
+          </Link>)}
+        </div>
+      </section>}
       <SocialContactSection locale={locale} />
     </>
   );
