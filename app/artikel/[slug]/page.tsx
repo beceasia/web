@@ -34,7 +34,7 @@ export default async function DetailArtikelPage({params}:Props){
  <article className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
   <Link href="/artikel" className="text-sm font-bold text-teal hover:underline">← Semua artikel</Link>
   <div className="mt-8 flex flex-wrap items-center gap-3 text-sm text-slate-600">
-    <Link href={`/artikel?kategori=${a.category}`} className="rounded-full bg-teal/10 px-3 py-1 font-bold text-emerald-800">{getArticleCategory(a.category)?.label}</Link>
+    <Link href={`/artikel/kategori/${a.category}`} className="rounded-full bg-teal/10 px-3 py-1 font-bold text-emerald-800">{getArticleCategory(a.category)?.label}</Link>
     <span>{formatArticleDate(a.publishedAt)}</span>
   </div>
   <h1 className="mt-5 text-3xl font-black leading-tight text-navy sm:text-5xl">{a.title}</h1>
