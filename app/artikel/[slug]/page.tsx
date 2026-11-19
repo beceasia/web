@@ -7,11 +7,30 @@ type Props={params:Promise<{slug:string}>};
 export function generateStaticParams(){return getArticles().map(a=>({slug:a.slug}));}
 export async function generateMetadata({params}:Props):Promise<Metadata>{
  const {slug}=await params;const a=getArticle(slug);
- return a?{title:a.title,description:a.excerpt,alternates:{canonical:`/artikel/${slug}`},openGraph:{title:a.title,description:a.excerpt,type:"article",url:`/artikel/${slug}`,publishedTime:a.publishedAt+"T09:00:00+07:00"}}:{title:"Artikel tidak ditemukan"};
+ return a?{title:a.title,description:a.excerpt,alternates:{canonical:`/artikel/${slug}`},openGraph:{title:a.title,description:a.excerpt,type:"article",url:`https://www.bece.asia/artikel/${slug}`,publishedTime:a.publishedAt,section:getArticleCategory(a.category)?.label},twitter:{card:"summary",title:a.title,description:a.excerpt},robots:{index:true,follow:true}}:{title:"Artikel tidak ditemukan",robots:{index:false}};
 }
 export default async function DetailArtikelPage({params}:Props){
  const {slug}=await params;const a=getArticle(slug);if(!a)notFound();
+ const articleUrl=`https://www.bece.asia/artikel/${slug}`;
+ const structuredData=[
+  {"@context":"https://schema.org","@type":"NewsArticle",
+   headline:a.title,description:a.excerpt,inLanguage:"id-ID",
+   datePublished:a.publishedAt,mainEntityOfPage:{"@type":"WebPage","@id":articleUrl},
+   author:{"@type":"Organization",name:"BECE Asia",url:"https://www.bece.asia"},
+   publisher:{"@type":"Organization",name:"BECE Asia",url:"https://www.bece.asia"},
+   articleSection:getArticleCategory(a.category)?.label,
+   about:a.regions,
+   citation:a.sources.map(source=>source.url),
+   isAccessibleForFree:true},
+  {"@context":"https://schema.org","@type":"BreadcrumbList",
+   itemListElement:[
+    {"@type":"ListItem",position:1,name:"Beranda",item:"https://www.bece.asia/"},
+    {"@type":"ListItem",position:2,name:"Artikel",item:"https://www.bece.asia/artikel"},
+    {"@type":"ListItem",position:3,name:a.title,item:articleUrl}
+   ]}
+ ];
  return <PageShell locale="id" currentPath={`/artikel/${slug}`}>
+ <script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(structuredData).replace(/</g,"\\u003c")}} />
  <article className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
   <Link href="/artikel" className="text-sm font-bold text-teal hover:underline">← Semua artikel</Link>
   <div className="mt-8 flex flex-wrap items-center gap-3 text-sm text-slate-600">
