@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getArticles } from "@/lib/articles";
+import { getArticles, articleCategories } from "@/lib/articles";
 import { apps } from "@/data/apps";
 import { businessToolsApps } from "@/data/business-tools-apps";
 import { communityGamesApps } from "@/data/community-games-apps";
@@ -34,6 +34,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...marketIntelligence.map((path) => ({ url: `${base}${path}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.75 })),
     ...catalog.map((item) => ({ url: `${base}${item.url}`, lastModified: new Date(item.lastUpdated), changeFrequency: "monthly" as const, priority: 0.6 })),
     { url: `${base}/artikel`, lastModified: now, changeFrequency: "daily" as const, priority: 0.85 },
+    ...articleCategories.filter(category => articles.some(article => article.category === category.slug)).map(category => ({ url: `${base}/artikel/kategori/${category.slug}`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 })),
     ...articles.map((article) => ({ url: `${base}/artikel/${article.slug}`, lastModified: new Date(`${article.publishedAt}T12:00:00+07:00`), changeFrequency: "monthly" as const, priority: 0.75 })),
   ];
 }
